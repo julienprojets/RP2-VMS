@@ -1,0 +1,125 @@
+/* ===============================
+   GLOBAL COLOR SCHEME
+   =============================== */
+.root {
+    /* Brand colors */
+    -fx-dark-red: #780000;
+    -fx-red: #c1121f;
+    -fx-cream: #fdf0d5;
+    -fx-dark-blue: #003049;
+    -fx-light-blue: #669bbc;
+
+    /* Base UI colors */
+    -fx-background-color: -fx-cream;
+    -fx-font-family: "Segoe UI", "Roboto", "Arial";
+    -fx-text-fill: -fx-dark-blue;
+}
+
+/* ===============================
+   TYPOGRAPHY
+   =============================== */
+.label-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-red;
+}
+
+.label-subtitle {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-blue;
+}
+
+.label-info {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-light-blue;
+}
+
+/* ===============================
+   BUTTONS
+   =============================== */
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+/* Primary (red) button */
+.button-primary {
+    -fx-background-color: -fx-red;
+    -fx-text-fill: white;
+}
+.button-primary:hover {
+    -fx-background-color: derive(-fx-red, -20%);
+}
+
+/* Secondary (dark blue) button */
+.button-secondary {
+    -fx-background-color: -fx-dark-blue;
+    -fx-text-fill: white;
+}
+.button-secondary:hover {
+    -fx-background-color: derive(-fx-dark-blue, -15%);
+}
+
+/* Neutral / light button */
+.button-light {
+    -fx-background-color: -fx-light-blue;
+    -fx-text-fill: white;
+}
+.button-light:hover {
+    -fx-background-color: derive(-fx-light-blue, -15%);
+}
+
+/* ===============================
+   TEXT FIELDS
+   =============================== */
+.text-field, .password-field {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-blue;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 8;
+}
+.text-field:focused, .password-field:focused {
+    -fx-border-color: -fx-dark-blue;
+}
+
+/* ===============================
+   TABLE & LISTS
+   =============================== */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: -fx-light-blue;
+    -fx-border-radius: 4;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -fx-dark-blue;
+}
+.table-view .column-header, .table-view .column-header .label {
+    -fx-text-fill: white;
+}
+
+/* ===============================
+   CONTAINERS (PANES)
+   =============================== */
+.pane-card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 3);
+}
+
+.pane-header {
+    -fx-background-color: -fx-dark-blue;
+    -fx-text-fill: white;
+}
+
+/* ===============================
+   MISC
+   =============================== */
+.separator {
+    -fx-background-color: -fx-light-blue;
+}

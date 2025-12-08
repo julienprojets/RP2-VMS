@@ -1,0 +1,171 @@
+/* ============================================
+   DASHBOARD LAYOUT — STYLES SPECIFIC TO THIS PAGE
+   ============================================ */
+
+/* ----------------------------
+   SIDEBAR
+   ---------------------------- */
+.sidebar {
+    -fx-background-color: -fx-dark-red;
+    -fx-padding: 18 12;
+    -fx-spacing: 16;
+}
+
+.sidebar-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* ----------------------------
+   SIDEBAR BUTTONS (matches FXML styleClass="sidebar-button")
+   ---------------------------- */
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 0 10 12;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-min-width: 0;
+    -fx-pref-width: 180px;
+    -fx-max-width: 200px;
+    -fx-wrap-text: false;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: derive(-fx-dark-red, 15%);
+}
+
+.sidebar-button:focused {
+    -fx-border-color: derive(-fx-dark-red, -10%);
+    -fx-border-width: 0 0 0 4;
+}
+
+/* selected/active state — can be applied via controller */
+.sidebar-button-active {
+    -fx-background-color: derive(-fx-dark-red, 28%);
+    -fx-font-weight: bold;
+}
+
+/* ----------------------------
+   TOP HEADER BAR
+   ---------------------------- */
+.top-header {
+    -fx-background-color: -fx-cream;
+    -fx-padding: 10 16;
+    -fx-border-color: -fx-dark-blue;
+    -fx-border-width: 0 0 2 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.header-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-dark-blue;
+}
+
+.header-userinfo {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-dark-blue;
+}
+
+
+/* ----------------------------
+   MAIN ICON GRID
+   ---------------------------- */
+.dashboard-icon-box {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-padding: 12;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-min-width: 160;
+    -fx-min-height: 160;
+    -fx-pref-width: 180;
+    -fx-pref-height: 180;
+}
+
+.dashboard-icon-box .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-dark-blue;
+    -fx-font-weight: bold;
+}
+
+.dashboard-icon-box:hover {
+    -fx-opacity: 0.7;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);
+    -fx-background-color: rgba(0,0,0,0.03);
+}
+
+
+/* OPTIONAL: card-style box if you want white background panels */
+.dashboard-card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+/* ----------------------------
+   UTILITY & LAYOUT ADJUSTMENTS
+   ---------------------------- */
+.center-grid {
+    -fx-hgap: 60;
+    -fx-vgap: 40;
+    -fx-alignment: CENTER;
+}
+
+/* ensure labels inside dashboard follow global typography */
+.dashboard-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-dark-blue;
+    -fx-font-weight: bold;
+}
+
+/* ----------------------------
+   DISABLED BUTTONS STYLING
+   ---------------------------- */
+.disabled-button {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+.disabled-button .label {
+    -fx-text-fill: #999999;
+}
+
+.disabled-sidebar-button {
+    -fx-opacity: 0.5;
+    -fx-text-fill: #cccccc !important;
+    -fx-cursor: default;
+}
+
+.disabled-sidebar-button:hover {
+    -fx-background-color: transparent !important;
+}
+
+/* ----------------------------
+   LOGOUT BUTTON STYLING
+   ---------------------------- */
+.logout-button {
+    -fx-font-size: 18px;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 5 10;
+    -fx-text-fill: #333333;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+    -fx-background-radius: 5;
+    -fx-text-fill: #d32f2f;
+}
+
+.logout-button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.15);
+}

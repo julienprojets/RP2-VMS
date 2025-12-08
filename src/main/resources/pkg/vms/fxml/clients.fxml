@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pkg.vms.controller.ClientsController">
+
+    <!-- HEADER -->
+    <top>
+        <HBox spacing="15" style="-fx-background-color:#1e1e1e;">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Label text="Clients Management"
+                   style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <TextField fx:id="searchHeaderField"
+                       promptText="Search client..."
+                       prefWidth="250"/>
+
+            <Button text="Search" onAction="#handleSearch"/>
+        </HBox>
+    </top>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="20">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+
+
+            <!-- 2. TableView -->
+            <TableView fx:id="clientsTable" prefHeight="250">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="colPhone" text="Phone" prefWidth="120"/>
+                    <TableColumn fx:id="colAddress" text="Address" prefWidth="200"/>
+                </columns>
+            </TableView>
+
+            <!-- Action buttons under table -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="0" right="0" bottom="0" left="5"/>
+                </padding>
+
+                <Button text="View Details" onAction="#handleViewDetails"/>
+                <Button text="Edit" onAction="#handleEdit"/>
+                <Button text="Delete" onAction="#handleDelete"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Export Excel"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- 3. Client Details Panel -->
+            <VBox fx:id="detailsPane"
+                  spacing="15"
+                  visible="false"
+                  managed="false"
+                  style="-fx-background-color:#780000; -fx-background-radius:10;">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+
+                <Label fx:id="detailsTitle"
+                       style="-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;"/>
+
+                <!-- Info grid -->
+                <GridPane hgap="20" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="75" halignment="LEFT"/>
+                        <ColumnConstraints hgrow="ALWAYS" halignment="LEFT"/>
+                    </columnConstraints>
+
+                    <rowConstraints>
+                        <RowConstraints minHeight="30"/>
+                        <RowConstraints minHeight="30"/>
+                        <RowConstraints minHeight="30"/>
+                        <RowConstraints minHeight="30"/>
+                        <RowConstraints minHeight="30"/>
+                        <RowConstraints minHeight="30"/>
+                        <RowConstraints minHeight="30"/>
+                    </rowConstraints>
+
+                    <Label text="Client ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;"/>
+                    <Label fx:id="detId" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-text-fill:white; -fx-alignment:CENTER_LEFT;"/>
+
+                    <Label text="Client Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;"/>
+                    <Label fx:id="detName" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-text-fill:white; -fx-alignment:CENTER_LEFT;"/>
+
+                    <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;"/>
+                    <Label fx:id="detEmail" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-text-fill:white; -fx-alignment:CENTER_LEFT;"/>
+
+                    <Label text="Address:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;"/>
+                    <Label fx:id="detAddress" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-text-fill:white; -fx-alignment:CENTER_LEFT;"/>
+
+                    <Label text="Phone:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;"/>
+                    <Label fx:id="detPhone" GridPane.rowIndex="4" GridPane.columnIndex="1" style="-fx-text-fill:white; -fx-alignment:CENTER_LEFT;"/>
+
+                    <Label text="Total Requests:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;"/>
+                    <Label fx:id="detRequests" GridPane.rowIndex="5" GridPane.columnIndex="1" style="-fx-text-fill:white; -fx-alignment:CENTER_LEFT;"/>
+
+                    <Label text="Active Vouchers:" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-text-fill:white; -fx-font-weight:bold; -fx-alignment:CENTER_LEFT;"/>
+                    <Label fx:id="detVouchers" GridPane.rowIndex="6" GridPane.columnIndex="1" style="-fx-text-fill:white; -fx-alignment:CENTER_LEFT;"/>
+                </GridPane>
+
+                <!-- Bottom action bar -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="10" right="0" bottom="0" left="0"/>
+                    </padding>
+
+                    <Button text="View Requests"/>
+                    <Button text="View Vouchers"/>
+                    <Button text="Update Info"/>
+                </HBox>
+
+            </VBox>
+
+            <!-- ADD / EDIT CLIENT FORM (initially hidden) -->
+            <VBox fx:id="addForm"
+                  spacing="12"
+                  visible="false"
+                  managed="false"
+                  style="-fx-background-color:#2d2d2d; -fx-padding:20; -fx-background-radius:10;">
+
+                <Label fx:id="formTitle"
+                       text="Add New Client"
+                       style="-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;"/>
+
+                <TextField fx:id="addName" promptText="Client Name"/>
+                <TextField fx:id="addEmail" promptText="Email"/>
+                <TextField fx:id="addAddress" promptText="Address"/>
+                <TextField fx:id="addPhone" promptText="Phone"/>
+
+                <Label fx:id="addError" style="-fx-text-fill: red;"/>
+
+                <HBox spacing="10">
+                    <Button fx:id="formSaveButton" text="Save" onAction="#handleFormSave"/>
+                    <Button text="Cancel" onAction="#handleAddCancel"/>
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

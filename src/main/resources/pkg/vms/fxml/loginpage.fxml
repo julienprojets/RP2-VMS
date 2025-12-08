@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="700" prefWidth="1000"
+            xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pkg.vms.controller.LoginController"
+            stylesheets="@../css/login.css">
+
+    <!-- Main Container - Centered -->
+    <VBox alignment="CENTER" spacing="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" 
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        
+        <!-- Login Card -->
+        <VBox fx:id="loginCard" alignment="CENTER" spacing="30" 
+              styleClass="login-card"
+              prefWidth="420" prefHeight="580">
+            
+            <padding>
+                <Insets top="50" right="40" bottom="50" left="40"/>
+            </padding>
+
+            <!-- Logo Section -->
+            <VBox alignment="CENTER" spacing="12">
+                <VBox alignment="CENTER" styleClass="logo-container" prefWidth="80" prefHeight="80">
+                    <Label text="🔐" styleClass="logo-icon" />
+                </VBox>
+                <Label text="VMS Login" styleClass="login-title" />
+                <Label text="Voucher Management System" styleClass="login-subtitle" />
+            </VBox>
+
+            <!-- Separator -->
+            <Separator styleClass="separator-line" prefWidth="340" />
+
+            <!-- Input Fields Section -->
+            <VBox spacing="24" alignment="CENTER" prefWidth="340">
+                
+                <!-- Username Field -->
+                <VBox styleClass="input-container" spacing="4">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label text="👤" styleClass="input-icon" />
+                        <TextField fx:id="usernameField"
+                                   styleClass="login-text-field"
+                                   promptText="Enter your username"
+                                   prefWidth="280" />
+                    </HBox>
+                </VBox>
+
+                <!-- Password Field -->
+                <VBox styleClass="input-container" spacing="4">
+                    <HBox alignment="CENTER_LEFT" spacing="12">
+                        <Label text="🔒" styleClass="input-icon" />
+                        <PasswordField fx:id="passwordField"
+                                       styleClass="login-password-field"
+                                       promptText="Enter your password"
+                                       prefWidth="280" />
+                    </HBox>
+                </VBox>
+
+            </VBox>
+
+            <!-- Buttons Section -->
+            <VBox styleClass="button-container" alignment="CENTER" spacing="12" prefWidth="340">
+                <Button fx:id="loginButton"
+                        text="Sign In"
+                        styleClass="login-button"
+                        prefWidth="340"
+                        defaultButton="true" />
+                
+                <Button fx:id="cancelButton"
+                        text="Clear"
+                        styleClass="cancel-button"
+                        prefWidth="340" />
+            </VBox>
+
+            <!-- Footer Info -->
+            <VBox alignment="CENTER" spacing="4">
+                <Separator styleClass="separator-line" prefWidth="200" />
+                <Label text="© 2024 Voucher Management System" 
+                       styleClass="login-subtitle" 
+                       style="-fx-font-size: 11px; -fx-text-fill: #adb5bd;" />
+            </VBox>
+
+        </VBox>
+
+    </VBox>
+
+</AnchorPane>

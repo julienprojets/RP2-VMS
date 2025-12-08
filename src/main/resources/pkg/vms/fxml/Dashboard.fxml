@@ -1,0 +1,97 @@
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+
+<AnchorPane stylesheets="@../css/dashboard.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pkg.vms.controller.DashboardController">
+
+    <BorderPane fx:id="rootPane"
+                prefWidth="1200" prefHeight="720">
+
+        <!-- ============= TOP HEADER ============= -->
+        <top>
+            <HBox prefHeight="70" spacing="20" prefWidth="Infinity"
+                  style="-fx-background-color: #f7eed4; -fx-padding: 10; -fx-border-color: black; -fx-border-width: 0 0 2 0;"
+                  alignment="CENTER_LEFT">
+
+                <Label text="Voucher Management System"
+                       style="-fx-font-size: 20; -fx-font-weight: bold;"
+                       HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="usernameLabel" text="Logged in as: Bobby"
+                       style="-fx-font-size: 16;"/>
+
+                <Label fx:id="roleLabel" text="Role: Superuser"
+                       style="-fx-font-size: 16;"/>
+
+                <Button fx:id="logoutButton" 
+                        text="⏻"
+                        styleClass="logout-button"
+                        onAction="#handleLogout">
+                    <tooltip>
+                        <Tooltip text="Logout"/>
+                    </tooltip>
+                </Button>
+            </HBox>
+        </top>
+
+        <!-- ============= MAIN CONTENT AREA ============= -->
+        <center>
+            <GridPane hgap="60" vgap="40" alignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33"/>
+                    <ColumnConstraints percentWidth="33"/>
+                    <ColumnConstraints percentWidth="33"/>
+                </columnConstraints>
+
+                <!-- Row 1 -->
+                <VBox fx:id="vboxRequests" alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <ImageView fx:id="iconRequests" fitWidth="120" fitHeight="120"
+                               onMouseClicked="#handleRequestsClick"/>
+                    <Label text="Voucher Requests"/>
+                </VBox>
+
+                <VBox fx:id="vboxClients" alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                    <ImageView fx:id="iconClients"
+                               fitWidth="120" fitHeight="120"
+                               onMouseClicked="#handleClientsClick"/>
+
+                    <Label text="Clients"/>
+                </VBox>
+
+                <VBox fx:id="vboxVouchers" alignment="CENTER" GridPane.rowIndex="0" GridPane.columnIndex="2">
+                    <ImageView fx:id="iconVouchers" fitWidth="120" fitHeight="120"
+                               onMouseClicked="#handleVouchersClick"/>
+                    <Label text="Vouchers"/>
+                </VBox>
+
+                <!-- Row 2 -->
+                <VBox fx:id="vboxBranches" alignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <ImageView fx:id="iconBranches" fitWidth="120" fitHeight="120"
+                               onMouseClicked="#handleBranchesClick"/>
+                    <Label text="Branches"/>
+                </VBox>
+
+                <VBox fx:id="vboxUsers" alignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <ImageView fx:id="iconUsers" fitWidth="120" fitHeight="120"
+                               onMouseClicked="#handleUsersClick"/>
+                    <Label text="Users"/>
+                </VBox>
+
+                <VBox fx:id="vboxReports" alignment="CENTER" GridPane.rowIndex="1" GridPane.columnIndex="2">
+                    <ImageView fx:id="iconReports" fitWidth="120" fitHeight="120"
+                               onMouseClicked="#handleReportsClick"/>
+                    <Label text="Reports"/>
+                </VBox>
+
+            </GridPane>
+        </center>
+
+    </BorderPane>
+
+</AnchorPane>
