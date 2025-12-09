@@ -5,11 +5,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 import pkg.vms.DAO.ClientsDAO;
 import pkg.vms.model.Clients;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 public class ClientsController {
 
@@ -66,6 +75,34 @@ public class ClientsController {
                 }
             });
         }
+        
+        // Restrict phone field to numbers only
+        setupPhoneNumberValidation();
+    }
+    
+    private void setupPhoneNumberValidation() {
+        if (addPhone != null) {
+            // Create a TextFormatter that only allows digits
+            Pattern pattern = Pattern.compile("\\d*");
+            UnaryOperator<TextFormatter.Change> filter = change -> {
+                String newText = change.getControlNewText();
+                if (pattern.matcher(newText).matches()) {
+                    return change;
+                } else {
+                    return null; // Reject the change
+                }
+            };
+            
+            TextFormatter<String> formatter = new TextFormatter<>(filter);
+            addPhone.setTextFormatter(formatter);
+            
+            // Also add a listener to filter out non-numeric characters on paste
+            addPhone.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null && !newValue.matches("\\d*")) {
+                    addPhone.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            });
+        }
     }
 
     private void loadClients() {
@@ -101,7 +138,10 @@ public class ClientsController {
 // Add Client Form
     @FXML
     private void handleAdd() {
-        System.out.println("Add button clicked!");
+        // Hide details pane
+        detailsPane.setVisible(false);
+        detailsPane.setManaged(false);
+        
         addForm.setVisible(true);
         addForm.setManaged(true);
     }
@@ -165,12 +205,29 @@ public class ClientsController {
     }
 
 
-    // Edit Client Form
+    // Edit Client Form - Toggle functionality
     @FXML
     private void handleEdit() {
+        // If form is already visible, toggle it off
+        if (addForm.isVisible() && isEditMode) {
+            handleAddCancel();
+            return;
+        }
+        
         selectedClient = clientsTable.getSelectionModel().getSelectedItem();
 
-        if (selectedClient == null) return;
+        if (selectedClient == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a client from the table to edit.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Hide details pane
+        detailsPane.setVisible(false);
+        detailsPane.setManaged(false);
 
         isEditMode = true;
 
@@ -186,26 +243,70 @@ public class ClientsController {
         addForm.setManaged(true);
     }
 
-    // Figma View Details
+    // Figma View Details - Toggle functionality
     @FXML
     private void handleViewDetails() {
         Clients c = clientsTable.getSelectionModel().getSelectedItem();
-        if (c == null) return;
+        
+        // If details pane is already visible, toggle it off
+        if (detailsPane.isVisible()) {
+            detailsPane.setVisible(false);
+            detailsPane.setManaged(false);
+            return;
+        }
+        
+        // If no client selected, show warning
+        if (c == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a client from the table to view details.");
+            alert.showAndWait();
+            return;
+        }
 
-        detailsPane.setVisible(true);
-        detailsPane.setManaged(true);
+        try {
+            // Hide add form if visible
+            addForm.setVisible(false);
+            addForm.setManaged(false);
 
-        detailsTitle.setText("Client Details (Selected: "
-                + c.getRef_client() + " - " + c.getNom_client() + ")");
+            // Show details pane
+            detailsPane.setVisible(true);
+            detailsPane.setManaged(true);
 
-        detId.setText(String.valueOf(c.getRef_client()));
-        detName.setText(c.getNom_client());
-        detEmail.setText(c.getEmail_client());
-        detAddress.setText(c.getAddress_client());
-        detPhone.setText(c.getPhone_client());
+            // Set title
+            detailsTitle.setText("Client Details (Selected: "
+                    + c.getRef_client() + " - " + c.getNom_client() + ")");
 
-        detRequests.setText(String.valueOf(c.getRequests().size()));
-        detVouchers.setText(String.valueOf(c.getVouchers().size()));
+            // Set client information with null safety
+            detId.setText(String.valueOf(c.getRef_client()));
+            detName.setText(c.getNom_client() != null ? c.getNom_client() : "");
+            detEmail.setText(c.getEmail_client() != null ? c.getEmail_client() : "");
+            detAddress.setText(c.getAddress_client() != null ? c.getAddress_client() : "");
+            detPhone.setText(c.getPhone_client() != null ? c.getPhone_client() : "");
+
+            // Set requests and vouchers count safely
+            try {
+                int requestsCount = c.getRequests() != null ? c.getRequests().size() : 0;
+                detRequests.setText(String.valueOf(requestsCount));
+            } catch (Exception e) {
+                detRequests.setText("0");
+            }
+
+            try {
+                int vouchersCount = c.getVouchers() != null ? c.getVouchers().size() : 0;
+                detVouchers.setText(String.valueOf(vouchersCount));
+            } catch (Exception e) {
+                detVouchers.setText("0");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Failed to load client details: " + e.getMessage());
+            errorAlert.showAndWait();
+        }
     }
 
 
@@ -213,13 +314,108 @@ public class ClientsController {
     @FXML
     private void handleDelete() {
         Clients selected = clientsTable.getSelectionModel().getSelectedItem();
-        if (selected == null) return;
-
-        try {
-            dao.delete(selected.getRef_client());
-            loadClients();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (selected == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Selection");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select a client from the table to delete.");
+            alert.showAndWait();
+            return;
         }
+
+        // Confirm deletion
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirm Deletion");
+        confirmAlert.setHeaderText("Delete Client");
+        confirmAlert.setContentText("Are you sure you want to delete client '" + selected.getNom_client() + "'?");
+        
+        if (confirmAlert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                dao.delete(selected.getRef_client());
+                loadClients();
+                
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setTitle("Success");
+                successAlert.setHeaderText(null);
+                successAlert.setContentText("Client deleted successfully.");
+                successAlert.showAndWait();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Error");
+                errorAlert.setHeaderText(null);
+                errorAlert.setContentText("Failed to delete client: " + e.getMessage());
+                errorAlert.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    private void handleExportExcel() {
+        try {
+            // Get the stage from any control
+            Stage stage = (Stage) clientsTable.getScene().getWindow();
+            
+            // Create file chooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Export Clients to Excel");
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv")
+            );
+            fileChooser.setInitialFileName("clients_export.csv");
+            
+            // Show save dialog
+            File file = fileChooser.showSaveDialog(stage);
+            
+            if (file != null) {
+                // Write CSV file
+                try (FileWriter writer = new FileWriter(file)) {
+                    // Write header
+                    writer.append("ID,Name,Email,Phone,Address\n");
+                    
+                    // Write data
+                    for (Clients client : data) {
+                        writer.append(String.valueOf(client.getRef_client())).append(",");
+                        writer.append(escapeCSV(client.getNom_client())).append(",");
+                        writer.append(escapeCSV(client.getEmail_client())).append(",");
+                        writer.append(escapeCSV(client.getPhone_client())).append(",");
+                        writer.append(escapeCSV(client.getAddress_client())).append("\n");
+                    }
+                    
+                    writer.flush();
+                    
+                    Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                    successAlert.setTitle("Export Successful");
+                    successAlert.setHeaderText(null);
+                    successAlert.setContentText("Clients exported successfully to:\n" + file.getAbsolutePath());
+                    successAlert.showAndWait();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                    errorAlert.setTitle("Export Error");
+                    errorAlert.setHeaderText(null);
+                    errorAlert.setContentText("Failed to export clients: " + e.getMessage());
+                    errorAlert.showAndWait();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Export Error");
+            errorAlert.setHeaderText(null);
+            errorAlert.setContentText("Failed to export clients: " + e.getMessage());
+            errorAlert.showAndWait();
+        }
+    }
+    
+    private String escapeCSV(String value) {
+        if (value == null) {
+            return "";
+        }
+        // If value contains comma, quote, or newline, wrap in quotes and escape quotes
+        if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        }
+        return value;
     }
 }
