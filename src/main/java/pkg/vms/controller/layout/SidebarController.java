@@ -3,6 +3,7 @@ package pkg.vms.controller.layout;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.event.ActionEvent;
 
@@ -15,6 +16,7 @@ public class SidebarController implements Initializable {
     @FXML
     private VBox root;
 
+    @FXML private Label dashboardLabel;
     @FXML private Button requestsButton;
     @FXML private Button clientsButton;
     @FXML private Button vouchersButton;
@@ -63,6 +65,11 @@ public class SidebarController implements Initializable {
     @FXML
     private void onReports(ActionEvent e) {
         navigate("reports");
+    }
+
+    @FXML
+    private void onDashboard(javafx.scene.input.MouseEvent e) {
+        navigate("dashboard");
     }
 
     // ================================================
@@ -114,6 +121,9 @@ public class SidebarController implements Initializable {
     public void setActive(String name) {
 
         // remove from all
+        if (dashboardLabel != null) {
+            dashboardLabel.getStyleClass().remove("active");
+        }
         requestsButton.getStyleClass().remove("active");
         clientsButton.getStyleClass().remove("active");
         vouchersButton.getStyleClass().remove("active");
@@ -121,9 +131,13 @@ public class SidebarController implements Initializable {
         usersButton.getStyleClass().remove("active");
         reportsButton.getStyleClass().remove("active");
 
-        // add to one (dashboard is now a label, so skip it)
+        // add to one
         switch (name) {
-            case "dashboard": break; // Dashboard is a label, not a button
+            case "dashboard": 
+                if (dashboardLabel != null) {
+                    dashboardLabel.getStyleClass().add("active");
+                }
+                break;
             case "requests":  requestsButton.getStyleClass().add("active"); break;
             case "clients":   clientsButton.getStyleClass().add("active"); break;
             case "vouchers":  vouchersButton.getStyleClass().add("active"); break;
@@ -198,7 +212,7 @@ public class SidebarController implements Initializable {
             // Remove lock icon from text if present
             String text = button.getText();
             if (text.contains("🔒")) {
-                button.setText(text.replace(" 🔒", ""));
+                button.setText(text.replace(" 🔒", "").trim());
             }
         } else {
             button.getStyleClass().add("disabled-sidebar-button");

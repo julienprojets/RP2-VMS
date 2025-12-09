@@ -1,0 +1,71 @@
+/* ============================================
+   SIDEBAR STYLES - Matching Login Page Theme
+   ============================================ */
+
+.sidebar {
+    -fx-background-color: #003049;
+    -fx-padding: 18 12;
+    -fx-spacing: 16;
+}
+
+.sidebar-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.sidebar-title:hover {
+    -fx-text-fill: #669bbc;
+}
+
+.sidebar-title.active {
+    -fx-text-fill: #669bbc;
+    -fx-font-weight: bold;
+}
+
+/* ----------------------------
+   SIDEBAR BUTTONS
+   ---------------------------- */
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 16;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-min-width: 0;
+    -fx-pref-width: 200px;
+    -fx-max-width: 200px;
+    -fx-wrap-text: false;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: rgba(102, 155, 188, 0.2);
+    -fx-text-fill: #669bbc;
+}
+
+.sidebar-button:focused {
+    -fx-border-color: #669bbc;
+    -fx-border-width: 0 0 0 4;
+}
+
+/* selected/active state */
+.sidebar-button.active {
+    -fx-background-color: rgba(102, 155, 188, 0.3);
+    -fx-text-fill: #669bbc;
+    -fx-font-weight: bold;
+}
+
+.disabled-sidebar-button {
+    -fx-opacity: 0.5;
+    -fx-text-fill: #cccccc !important;
+    -fx-cursor: default;
+}
+
+.disabled-sidebar-button:hover {
+    -fx-background-color: transparent !important;
+    -fx-text-fill: #cccccc !important;
+}

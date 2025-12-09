@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pkg.vms.controller.layout.SidebarController;
@@ -35,9 +36,11 @@ public class DashboardController {
     @FXML private VBox vboxReports;
 
     @FXML private BorderPane rootPane;  // The main BorderPane from Dashboard.fxml
+    @FXML private GridPane dashboardGrid;  // The dashboard grid
 
     private String currentUserRole;
     private SidebarController sidebarController;
+    private javafx.scene.Node dashboardGridNode;  // Store reference to the grid
 
     @FXML
     public void initialize() {
@@ -56,6 +59,9 @@ public class DashboardController {
 
             // Insert sidebar inside the left of the dashboard
             rootPane.setLeft(sidebar);
+
+            // Store reference to the dashboard grid
+            dashboardGridNode = rootPane.getCenter();
 
             // Apply role-based access control from UserSession if available
             String role = UserSession.getInstance().getRole();
@@ -79,45 +85,45 @@ public class DashboardController {
         }
     }
 
-    // CLICK HANDLERS FOR DASHBOARD ICONS
+    // CLICK HANDLERS FOR DASHBOARD GRID ITEMS
     @FXML
-    private void handleRequestsClick() {
-        if (!iconRequests.isDisable()) {
+    private void handleRequestsClick(javafx.scene.input.MouseEvent event) {
+        if (!iconRequests.isDisable() && !vboxRequests.getStyleClass().contains("disabled-button")) {
             navigateTo("requests");
         }
     }
 
     @FXML
-    private void handleClientsClick() {
-        if (!iconClients.isDisable()) {
+    private void handleClientsClick(javafx.scene.input.MouseEvent event) {
+        if (!iconClients.isDisable() && !vboxClients.getStyleClass().contains("disabled-button")) {
             navigateTo("clients");
         }
     }
 
     @FXML
-    private void handleVouchersClick() {
-        if (!iconVouchers.isDisable()) {
+    private void handleVouchersClick(javafx.scene.input.MouseEvent event) {
+        if (!iconVouchers.isDisable() && !vboxVouchers.getStyleClass().contains("disabled-button")) {
             navigateTo("vouchers");
         }
     }
 
     @FXML
-    private void handleBranchesClick() {
-        if (!iconBranches.isDisable()) {
+    private void handleBranchesClick(javafx.scene.input.MouseEvent event) {
+        if (!iconBranches.isDisable() && !vboxBranches.getStyleClass().contains("disabled-button")) {
             navigateTo("branches");
         }
     }
 
     @FXML
-    private void handleUsersClick() {
-        if (!iconUsers.isDisable()) {
+    private void handleUsersClick(javafx.scene.input.MouseEvent event) {
+        if (!iconUsers.isDisable() && !vboxUsers.getStyleClass().contains("disabled-button")) {
             navigateTo("users");
         }
     }
 
     @FXML
-    private void handleReportsClick() {
-        if (!iconReports.isDisable()) {
+    private void handleReportsClick(javafx.scene.input.MouseEvent event) {
+        if (!iconReports.isDisable() && !vboxReports.getStyleClass().contains("disabled-button")) {
             navigateTo("reports");
         }
     }
@@ -167,14 +173,24 @@ public class DashboardController {
                     break;
 
                 case "dashboard":
-                    view = FXMLLoader.load(
-                            getClass().getResource("/pkg/vms/fxml/Dashboard.fxml")
-                    );
+                    // Show the dashboard grid instead of loading a new view
+                    if (dashboardGridNode != null) {
+                        rootPane.setCenter(dashboardGridNode);
+                        // Update sidebar to highlight dashboard
+                        if (sidebarController != null) {
+                            sidebarController.setActive("dashboard");
+                        }
+                        return;  // Early return, no need to continue
+                    }
                     break;
             }
 
             if (view != null) {
                 rootPane.setCenter(view);   // Swap the center content
+                // Update sidebar to highlight the active item
+                if (sidebarController != null) {
+                    sidebarController.setActive(target);
+                }
             }
 
         } catch (IOException e) {
