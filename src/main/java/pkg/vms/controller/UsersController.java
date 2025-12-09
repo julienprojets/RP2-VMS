@@ -279,6 +279,13 @@ public class UsersController {
             }
         }
         
+        // Validate form fields are not null
+        if (addUsername == null || addFirstName == null || addLastName == null || 
+            addEmail == null || addDdl == null || addTitre == null) {
+            formError.setText("Form fields are not properly initialized.");
+            return;
+        }
+        
         String username = addUsername.getText().trim();
         String firstName = addFirstName.getText().trim();
         String lastName = addLastName.getText().trim();
@@ -288,8 +295,8 @@ public class UsersController {
         String status = addStatusCombo != null && addStatusCombo.getValue() != null ? 
                        addStatusCombo.getValue() : "";
         String password = addPassword != null ? addPassword.getText().trim() : "";
-        String ddl = addDdl.getText().trim();
-        String titre = addTitre.getText().trim();
+        String ddl = addDdl.getText() != null ? addDdl.getText().trim() : "";
+        String titre = addTitre.getText() != null ? addTitre.getText().trim() : "";
 
         if (username.isEmpty()) {
             formError.setText("Username cannot be empty.");
@@ -346,6 +353,9 @@ public class UsersController {
                 successAlert.showAndWait();
             } else {
                 // UPDATE EXISTING USER
+                // Store original username for WHERE clause (in case username was changed)
+                String originalUsername = editingUser.getUsername();
+                
                 // Only update password if it's not empty
                 if (password.isEmpty()) {
                     // Don't update password
@@ -359,8 +369,13 @@ public class UsersController {
                     ps.setString(6, ddl);
                     ps.setString(7, titre);
                     ps.setString(8, status);
-                    ps.setString(9, editingUser.getUsername());
-                    ps.executeUpdate();
+                    ps.setString(9, originalUsername);
+                    
+                    int rowsAffected = ps.executeUpdate();
+                    if (rowsAffected == 0) {
+                        formError.setText("Failed to update user. User may not exist.");
+                        return;
+                    }
                 } else {
                     // Update password too
                     PreparedStatement ps = conn.prepareStatement(
@@ -374,8 +389,13 @@ public class UsersController {
                     ps.setString(7, ddl);
                     ps.setString(8, titre);
                     ps.setString(9, status);
-                    ps.setString(10, editingUser.getUsername());
-                    ps.executeUpdate();
+                    ps.setString(10, originalUsername);
+                    
+                    int rowsAffected = ps.executeUpdate();
+                    if (rowsAffected == 0) {
+                        formError.setText("Failed to update user. User may not exist.");
+                        return;
+                    }
                 }
                 
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
