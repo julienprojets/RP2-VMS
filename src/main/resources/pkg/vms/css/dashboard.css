@@ -2,76 +2,36 @@
    DASHBOARD LAYOUT — STYLES SPECIFIC TO THIS PAGE
    ============================================ */
 
-/* ----------------------------
-   SIDEBAR
-   ---------------------------- */
-.sidebar {
-    -fx-background-color: -fx-dark-red;
-    -fx-padding: 18 12;
-    -fx-spacing: 16;
-}
-
-.sidebar-title {
-    -fx-font-size: 22px;
-    -fx-font-weight: bold;
-    -fx-text-fill: white;
-}
-
-/* ----------------------------
-   SIDEBAR BUTTONS (matches FXML styleClass="sidebar-button")
-   ---------------------------- */
-.sidebar-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-alignment: CENTER_LEFT;
-    -fx-padding: 10 0 10 12;
-    -fx-background-radius: 6;
-    -fx-cursor: hand;
-    -fx-min-width: 0;
-    -fx-pref-width: 180px;
-    -fx-max-width: 200px;
-    -fx-wrap-text: false;
-}
-
-.sidebar-button:hover {
-    -fx-background-color: derive(-fx-dark-red, 15%);
-}
-
-.sidebar-button:focused {
-    -fx-border-color: derive(-fx-dark-red, -10%);
-    -fx-border-width: 0 0 0 4;
-}
-
-/* selected/active state — can be applied via controller */
-.sidebar-button-active {
-    -fx-background-color: derive(-fx-dark-red, 28%);
-    -fx-font-weight: bold;
+/* Root background matching login page */
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #dce6eb 100%);
 }
 
 /* ----------------------------
    TOP HEADER BAR
    ---------------------------- */
 .top-header {
-    -fx-background-color: -fx-cream;
-    -fx-padding: 10 16;
-    -fx-border-color: -fx-dark-blue;
+    -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #dce6eb 100%);
+    -fx-padding: 12 20;
+    -fx-border-color: #003049;
     -fx-border-width: 0 0 2 0;
     -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
 }
 
 .header-title {
-    -fx-font-size: 20px;
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
-    -fx-text-fill: -fx-dark-blue;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
 }
 
 .header-userinfo {
     -fx-font-size: 14px;
-    -fx-text-fill: -fx-dark-blue;
+    -fx-text-fill: white;
+    -fx-font-weight: normal;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
 }
-
 
 /* ----------------------------
    MAIN ICON GRID
@@ -79,35 +39,36 @@
 .dashboard-icon-box {
     -fx-alignment: center;
     -fx-spacing: 10;
-    -fx-padding: 12;
-    -fx-background-radius: 10;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
     -fx-cursor: hand;
-    -fx-min-width: 160;
-    -fx-min-height: 160;
-    -fx-pref-width: 180;
-    -fx-pref-height: 180;
+    -fx-min-width: 180;
+    -fx-min-height: 180;
+    -fx-pref-width: 200;
+    -fx-pref-height: 200;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
 }
 
 .dashboard-icon-box .label {
     -fx-font-size: 14px;
-    -fx-text-fill: -fx-dark-blue;
+    -fx-text-fill: #003049;
     -fx-font-weight: bold;
 }
 
 .dashboard-icon-box:hover {
-    -fx-opacity: 0.7;
+    -fx-opacity: 0.9;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);
-    -fx-background-color: rgba(0,0,0,0.03);
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 25, 0, 0, 6);
+    -fx-background-color: #f8f9fa;
 }
-
 
 /* OPTIONAL: card-style box if you want white background panels */
 .dashboard-card {
     -fx-background-color: white;
     -fx-padding: 20;
     -fx-background-radius: 12;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
 }
 
 /* ----------------------------
@@ -116,13 +77,14 @@
 .center-grid {
     -fx-hgap: 60;
     -fx-vgap: 40;
-    -fx-alignment: CENTER;
+    -fx-alignment: TOP_CENTER;
+    -fx-padding: 20 0 0 0;
 }
 
 /* ensure labels inside dashboard follow global typography */
 .dashboard-label {
     -fx-font-size: 13px;
-    -fx-text-fill: -fx-dark-blue;
+    -fx-text-fill: #003049;
     -fx-font-weight: bold;
 }
 
@@ -136,6 +98,17 @@
 
 .disabled-button .label {
     -fx-text-fill: #999999;
+}
+
+.dashboard-icon-box.disabled-button {
+    -fx-cursor: default;
+}
+
+.dashboard-icon-box.disabled-button:hover {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+    -fx-background-color: white;
 }
 
 .disabled-sidebar-button {
@@ -152,20 +125,24 @@
    LOGOUT BUTTON STYLING
    ---------------------------- */
 .logout-button {
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-cursor: hand;
-    -fx-padding: 5 10;
-    -fx-text-fill: #333333;
+    -fx-padding: 6 12;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
 }
 
 .logout-button:hover {
-    -fx-background-color: rgba(0, 0, 0, 0.1);
-    -fx-background-radius: 5;
-    -fx-text-fill: #d32f2f;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 6;
+    -fx-text-fill: #ffcccc;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.3), 4, 0, 0, 1);
 }
 
 .logout-button:pressed {
-    -fx-background-color: rgba(0, 0, 0, 0.15);
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 2, 0, 0, 0);
 }
