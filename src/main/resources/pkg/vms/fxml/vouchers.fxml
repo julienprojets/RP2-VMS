@@ -1,87 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="pkg.vms.controller.VouchersController">
+            fx:controller="pkg.vms.controller.VouchersController"
+            stylesheets="@../css/vouchers.css">
 
     <!-- HEADER -->
     <top>
-        <HBox spacing="15" style="-fx-background-color:#1e1e1e;">
+        <HBox spacing="15" styleClass="vouchers-header" alignment="CENTER_LEFT">
             <padding>
                 <Insets top="15" right="15" bottom="15" left="15"/>
             </padding>
 
             <Label text="Vouchers Management"
-                   style="-fx-text-fill:white; -fx-font-size:20px; -fx-font-weight:bold;"/>
+                   styleClass="header-title-label"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
             <TextField fx:id="searchHeaderField"
                        promptText="Search voucher..."
-                       prefWidth="250"/>
+                       prefWidth="250"
+                       styleClass="search-field"/>
 
-            <Button text="Search" onAction="#handleSearch"/>
+            <Button text="Search"
+                    onAction="#handleSearch"
+                    styleClass="search-button"/>
         </HBox>
     </top>
 
     <!-- MAIN CONTENT -->
     <center>
-        <VBox spacing="20">
-            <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
-            </padding>
+        <VBox spacing="20" styleClass="content-container">
 
-            <!-- TOP ACTION BAR -->
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Generate Vouchers" fx:id="generateButton" onAction="#handleGenerate"/>
-                <Button text="+ Add Voucher" fx:id="addButton" onAction="#handleAddVoucher"/>
-            </HBox>
-            <Separator/>
+            <!-- Table container -->
+            <VBox styleClass="vouchers-table">
+                <TableView fx:id="voucherTable" prefHeight="270">
+                    <columns>
+                        <TableColumn fx:id="codeColumn" text="Voucher Code" prefWidth="150"/>
+                        <TableColumn fx:id="priceColumn" text="Price" prefWidth="120"/>
+                        <TableColumn fx:id="statusColumn" text="Status" prefWidth="140"/>
+                        <TableColumn fx:id="initDateColumn" text="Init Date" prefWidth="150"/>
+                        <TableColumn fx:id="expiryDateColumn" text="Expiry Date" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
 
-            <!-- VOUCHERS TABLE -->
-            <TableView fx:id="voucherTable" prefHeight="300">
-                <columns>
-                    <TableColumn fx:id="codeColumn" text="Code" prefWidth="150"/>
-                    <TableColumn fx:id="priceColumn" text="Price" prefWidth="120"/>
-                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="140"/>
-                    <TableColumn fx:id="initDateColumn" text="Init Date" prefWidth="150"/>
-                    <TableColumn fx:id="expiryDateColumn" text="Expiry Date" prefWidth="150"/>
-                </columns>
-            </TableView>
-
-            <!-- TABLE ACTION BUTTONS -->
+            <!-- Action buttons under table -->
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <padding>
-                    <Insets top="5" right="0" bottom="5" left="0"/>
+                    <Insets top="0" left="5" bottom="0" right="0"/>
                 </padding>
-                <Button text="Edit" fx:id="editButton" onAction="#handleEditVoucher"/>
-                <Button text="Delete" fx:id="deleteButton" onAction="#handleDeleteVoucher"/>
-            </HBox>
-            <Separator/>
 
-            <!-- ADD / EDIT VOUCHER FORM (optional, hidden by default) -->
-            <VBox fx:id="addForm" spacing="12" visible="false" managed="false"
-                  style="-fx-background-color:#2d2d2d; -fx-padding:20; -fx-background-radius:10;">
+                <Button text="Edit"
+                        fx:id="editButton"
+                        onAction="#handleEditVoucher"
+                        styleClass="action-button"/>
+
+                <Button text="Delete"
+                        fx:id="deleteButton"
+                        onAction="#handleDeleteVoucher"
+                        styleClass="action-button"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Generate Vouchers"
+                        fx:id="generateButton"
+                        onAction="#handleGenerate"
+                        styleClass="export-button"/>
+
+                <Button text="+ Add Voucher"
+                        fx:id="addButton"
+                        onAction="#handleAddVoucher"
+                        styleClass="add-button"/>
+            </HBox>
+
+            <Separator styleClass="separator"/>
+
+            <!-- ADD / EDIT VOUCHER FORM -->
+            <VBox fx:id="addForm"
+                  spacing="12"
+                  visible="false"
+                  managed="false"
+                  styleClass="voucher-form">
 
                 <Label fx:id="formTitle"
                        text="Add/Edit Voucher"
-                       style="-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;"/>
+                       styleClass="form-title"/>
 
-                <TextField fx:id="formCode" promptText="Voucher Code"/>
-                <TextField fx:id="formPrice" promptText="Price"/>
-                <TextField fx:id="formStatus" promptText="Status"/>
-                <DatePicker fx:id="formInitDate" promptText="Init Date"/>
-                <DatePicker fx:id="formExpiryDate" promptText="Expiry Date"/>
+                <TextField fx:id="formCode"
+                           promptText="Voucher Code"
+                           styleClass="form-text-field"/>
 
-                <Label fx:id="formError" style="-fx-text-fill:red;"/>
+                <TextField fx:id="formPrice"
+                           promptText="Price"
+                           styleClass="form-text-field"/>
+
+                <TextField fx:id="formStatus"
+                           promptText="Status"
+                           styleClass="form-text-field"/>
+
+                <DatePicker fx:id="formInitDate"
+                            promptText="Init Date"
+                            styleClass="form-date-picker"/>
+
+                <DatePicker fx:id="formExpiryDate"
+                            promptText="Expiry Date"
+                            styleClass="form-date-picker"/>
+
+                <Label fx:id="formError"
+                       styleClass="form-error"/>
 
                 <HBox spacing="10">
-                    <Button text="Save" onAction="#handleFormSave"/>
-                    <Button text="Cancel" onAction="#handleCancel"/>
+                    <Button text="Save"
+                            onAction="#handleFormSave"
+                            styleClass="form-save-button"/>
+
+                    <Button text="Cancel"
+                            onAction="#handleCancel"
+                            styleClass="form-cancel-button"/>
                 </HBox>
+
             </VBox>
 
         </VBox>
