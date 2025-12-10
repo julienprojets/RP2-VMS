@@ -295,9 +295,9 @@ public class BranchController {
     @FXML
     private void handleAddCompany() {
         // Hide other forms
-        if (addFormScrollPane != null) {
-            addFormScrollPane.setVisible(false);
-            addFormScrollPane.setManaged(false);
+        if (addForm != null) {
+            addForm.setVisible(false);
+            addForm.setManaged(false);
         }
         detailsPane.setVisible(false);
         detailsPane.setManaged(false);
@@ -474,8 +474,8 @@ public class BranchController {
         addUserEmail.clear();
         addError.setText("");
 
-        addFormScrollPane.setVisible(true);
-        addFormScrollPane.setManaged(true);
+        addForm.setVisible(true);
+        addForm.setManaged(true);
     }
 
     @FXML
@@ -512,8 +512,8 @@ public class BranchController {
 
     @FXML
     private void handleAddCancel() {
-        addFormScrollPane.setVisible(false);
-        addFormScrollPane.setManaged(false);
+        addForm.setVisible(false);
+        addForm.setManaged(false);
         isEditMode = false;
         selectedBranch = null;
     }
@@ -640,9 +640,9 @@ public class BranchController {
         }
 
         // Hide other forms
-        if (addFormScrollPane != null) {
-            addFormScrollPane.setVisible(false);
-            addFormScrollPane.setManaged(false);
+        if (addForm != null) {
+            addForm.setVisible(false);
+            addForm.setManaged(false);
         }
         addCompanyForm.setVisible(false);
         addCompanyForm.setManaged(false);
@@ -665,7 +665,7 @@ public class BranchController {
     @FXML
     private void handleEdit() {
         // Toggle functionality
-        if (addFormScrollPane != null && addFormScrollPane.isVisible() && isEditMode) {
+        if (addForm != null && addForm.isVisible() && isEditMode) {
             handleAddCancel();
             return;
         }
@@ -726,8 +726,8 @@ public class BranchController {
         
         addError.setText("");
 
-        addFormScrollPane.setVisible(true);
-        addFormScrollPane.setManaged(true);
+        addForm.setVisible(true);
+        addForm.setManaged(true);
     }
 
     @FXML

@@ -352,22 +352,26 @@
     -fx-border-color: #003049;
     -fx-border-width: 2;
     -fx-border-radius: 12;
-    -fx-padding: 15;
     -fx-min-width: 650;
     -fx-pref-width: 650;
     -fx-max-width: 650;
 }
 
-/* Branch form inside scroll pane should not have max-width constraint */
-.form-scroll-pane .branch-form {
-    -fx-max-width: Infinity;
+.form-header {
+    -fx-background-color: #003049;
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 15 20;
 }
 
 .form-title {
-    -fx-font-size: 16px;
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-text-fill: #003049;
-    -fx-padding: 0 0 10 0;
+    -fx-text-fill: white;
+}
+
+.form-content {
+    -fx-padding: 25;
+    -fx-spacing: 15;
 }
 
 .form-text-field, .form-combo-box {

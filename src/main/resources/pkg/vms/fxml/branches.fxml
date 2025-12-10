@@ -122,82 +122,88 @@
             </VBox>
 
             <!-- ADD / EDIT BRANCH FORM (initially hidden) -->
-            <ScrollPane fitToWidth="true" 
-                       pannable="true"
-                       vbarPolicy="AS_NEEDED"
-                       hbarPolicy="NEVER"
-                       visible="false"
-                       managed="false"
-                       fx:id="addFormScrollPane"
-                       prefHeight="350"
-                       maxHeight="400"
-                       styleClass="form-scroll-pane">
-                <VBox fx:id="addForm"
-                      spacing="10"
-                      styleClass="branch-form">
+            <VBox fx:id="addForm" spacing="0" visible="false" managed="false"
+                  styleClass="branch-form"
+                  maxWidth="650">
+                <!-- FORM HEADER -->
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
                     <Label fx:id="formTitle"
                            text="Add New Branch"
-                           styleClass="form-title"/>
+                           styleClass="form-title"
+                           HBox.hgrow="ALWAYS"/>
+                </HBox>
+                
+                <!-- SCROLLABLE FORM CONTENT -->
+                <ScrollPane fx:id="addFormScrollPane"
+                           fitToWidth="true" 
+                           pannable="true"
+                           vbarPolicy="AS_NEEDED"
+                           hbarPolicy="NEVER"
+                           styleClass="form-scroll-pane"
+                           prefHeight="350"
+                           maxHeight="400">
+                    <VBox spacing="10" styleClass="form-content">
+                        <GridPane hgap="15" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="130" prefWidth="130"/>
+                                <ColumnConstraints minWidth="250" prefWidth="250" hgrow="ALWAYS"/>
+                            </columnConstraints>
 
-                    <GridPane hgap="15" vgap="10">
-                        <columnConstraints>
-                            <ColumnConstraints minWidth="130" prefWidth="130"/>
-                            <ColumnConstraints minWidth="250" prefWidth="250" hgrow="ALWAYS"/>
-                        </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="32" prefHeight="32"/>
+                                <RowConstraints minHeight="32" prefHeight="32"/>
+                                <RowConstraints minHeight="32" prefHeight="32"/>
+                                <RowConstraints minHeight="32" prefHeight="32"/>
+                                <RowConstraints minHeight="32" prefHeight="32"/>
+                            </rowConstraints>
 
-                        <rowConstraints>
-                            <RowConstraints minHeight="32" prefHeight="32"/>
-                            <RowConstraints minHeight="32" prefHeight="32"/>
-                            <RowConstraints minHeight="32" prefHeight="32"/>
-                            <RowConstraints minHeight="32" prefHeight="32"/>
-                            <RowConstraints minHeight="32" prefHeight="32"/>
-                        </rowConstraints>
+                            <Label text="Company:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="details-label"/>
+                            <ComboBox fx:id="addCompanyCombo" promptText="Select Company" 
+                                     styleClass="form-combo-box"
+                                     prefWidth="250"
+                                     GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-                        <Label text="Company:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="details-label"/>
-                        <ComboBox fx:id="addCompanyCombo" promptText="Select Company" 
-                                 styleClass="form-combo-box"
-                                 prefWidth="250"
-                                 GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                            <Label text="Location:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="details-label"/>
+                            <TextField fx:id="addLocation" promptText="Enter location" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-                        <Label text="Location:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="details-label"/>
-                        <TextField fx:id="addLocation" promptText="Enter location" 
-                                  styleClass="form-text-field"
-                                  GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                            <Label text="Phone:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="details-label"/>
+                            <TextField fx:id="addPhone" promptText="Enter phone number" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                        <Label text="Phone:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="details-label"/>
-                        <TextField fx:id="addPhone" promptText="Enter phone number" 
-                                  styleClass="form-text-field"
-                                  GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                            <Label text="Responsible User:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="details-label"/>
+                            <ComboBox fx:id="addResponsibleCombo" promptText="Select user" 
+                                     styleClass="form-combo-box"
+                                     prefWidth="250"
+                                     onAction="#handleUserSelection"
+                                     GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-                        <Label text="Responsible User:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="details-label"/>
-                        <ComboBox fx:id="addResponsibleCombo" promptText="Select user" 
-                                 styleClass="form-combo-box"
-                                 prefWidth="250"
-                                 onAction="#handleUserSelection"
-                                 GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                            <Label text="User Email:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="details-label"/>
+                            <TextField fx:id="addUserEmail" promptText="Email will auto-populate" 
+                                      styleClass="form-text-field"
+                                      editable="false"
+                                      GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                        </GridPane>
 
-                        <Label text="User Email:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="details-label"/>
-                        <TextField fx:id="addUserEmail" promptText="Email will auto-populate" 
-                                  styleClass="form-text-field"
-                                  editable="false"
-                                  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-                    </GridPane>
+                        <Label fx:id="addError" styleClass="form-error"/>
 
-                    <Label fx:id="addError" styleClass="form-error"/>
-
-                    <HBox spacing="10">
-                        <Button fx:id="formSaveButton" text="Save" onAction="#handleFormSave" styleClass="form-save-button"/>
-                        <Button text="Cancel" onAction="#handleAddCancel" styleClass="form-cancel-button"/>
-                    </HBox>
-                </VBox>
-            </ScrollPane>
+                        <HBox spacing="10">
+                            <Button fx:id="formSaveButton" text="Save" onAction="#handleFormSave" styleClass="form-save-button"/>
+                            <Button text="Cancel" onAction="#handleAddCancel" styleClass="form-cancel-button"/>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
 
             <!-- ADD COMPANY FORM (initially hidden) -->
             <VBox fx:id="addCompanyForm"
                   spacing="10"
                   visible="false"
                   managed="false"
-                  styleClass="branch-form">
+                  styleClass="branch-form"
+                  style="-fx-padding: 20;">
                     <Label text="Add New Company"
                            styleClass="form-title"/>
 
