@@ -19,6 +19,16 @@ public class UsersDAO {
              ResultSet rs = stmt.executeQuery(query)) {
 
             while (rs.next()) {
+                String company = null;
+                try {
+                    company = rs.getString("company");
+                } catch (SQLException e) {
+                    // Column doesn't exist yet
+                }
+                if (company == null) {
+                    company = "";
+                }
+                
                 Users user = new Users(
                         rs.getString("username"),
                         rs.getString("first_name_user"),
@@ -28,7 +38,8 @@ public class UsersDAO {
                         rs.getString("password"),
                         rs.getString("ddl"),
                         rs.getString("titre"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        company
                 );
                 usersList.add(user);
             }
@@ -42,7 +53,7 @@ public class UsersDAO {
 
     // Add a new user
     public boolean addUser(Users user) {
-        String query = "INSERT INTO users(username, first_name_user, last_name_user, email_user, role, password, ddl, titre, status) VALUES(?,?,?,?,?,?,?,?,?)";
+        String query = "INSERT INTO users(username, first_name_user, last_name_user, email_user, role, password, ddl, titre, status, company) VALUES(?,?,?,?,?,?,?,?,?,?)";
 
         try (Connection conn = DBconnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -56,6 +67,7 @@ public class UsersDAO {
             ps.setString(7, user.getDdl());
             ps.setString(8, user.getTitre());
             ps.setString(9, user.getStatus());
+            ps.setString(10, user.getCompany() != null ? user.getCompany() : "");
 
             int rows = ps.executeUpdate();
             return rows > 0;

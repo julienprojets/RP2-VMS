@@ -42,6 +42,7 @@
                         <TableColumn fx:id="lastNameColumn" text="Last Name" prefWidth="120"/>
                         <TableColumn fx:id="emailColumn" text="Email" prefWidth="180"/>
                         <TableColumn fx:id="roleColumn" text="Role" prefWidth="100"/>
+                        <TableColumn fx:id="companyColumn" text="Company" prefWidth="150"/>
                         <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
                         <TableColumn fx:id="titreColumn" text="Titre" prefWidth="150"/>
                     </columns>
@@ -61,7 +62,7 @@
             <!-- ADD / EDIT USER FORM -->
             <VBox fx:id="addForm" spacing="0" visible="false" managed="false"
                   styleClass="user-form"
-                  maxWidth="600" maxHeight="500">
+                  maxWidth="600">
                 <!-- FORM HEADER WITH CLOSE BUTTON -->
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
                     <Label fx:id="formTitle"
@@ -78,9 +79,14 @@
                 </HBox>
                 
                 <!-- SCROLLABLE FORM CONTENT -->
-                <ScrollPane fitToWidth="true" 
-                           style="-fx-background-color:transparent; -fx-border-color:transparent;"
-                           vbarPolicy="AS_NEEDED" hbarPolicy="NEVER">
+                <ScrollPane fx:id="addFormScrollPane"
+                           fitToWidth="true" 
+                           pannable="true"
+                           vbarPolicy="AS_NEEDED"
+                           hbarPolicy="NEVER"
+                           styleClass="form-scroll-pane"
+                           prefHeight="350"
+                           maxHeight="400">
                     <VBox spacing="15" styleClass="form-content">
                         <GridPane hgap="15" vgap="15">
                             <columnConstraints>
@@ -150,6 +156,13 @@
                             <TextField fx:id="addTitre" promptText="Enter titre" 
                                       styleClass="form-text-field"
                                       GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+                            
+                            <!-- Company -->
+                            <Label text="Company:" GridPane.rowIndex="9" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <ComboBox fx:id="addCompanyCombo" promptText="Select company" 
+                                     styleClass="form-combo-box"
+                                     GridPane.rowIndex="9" GridPane.columnIndex="1"/>
                         </GridPane>
                         
                         <!-- Error Message -->
