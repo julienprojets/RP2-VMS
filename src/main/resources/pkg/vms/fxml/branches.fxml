@@ -239,22 +239,23 @@
 
             <!-- DELETE COMPANY FORM (initially hidden) -->
             <VBox fx:id="deleteCompanyForm"
-                  spacing="10"
+                  spacing="15"
                   visible="false"
                   managed="false"
-                  styleClass="branch-form">
+                  styleClass="branch-form"
+                  style="-fx-padding: 20;">
                 <Label text="Delete Company"
-                       styleClass="form-title"/>
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #003049;"/>
 
                 <Label fx:id="deleteCompanyInfo" 
-                       style="-fx-font-size: 12px; -fx-text-fill: #003049; -fx-wrap-text: true;"/>
+                       style="-fx-font-size: 14px; -fx-text-fill: #6c757d; -fx-wrap-text: true;"/>
 
                 <Label fx:id="deleteCompanyBranches" 
-                       style="-fx-font-size: 12px; -fx-text-fill: #c1121f; -fx-font-weight: bold; -fx-wrap-text: true;"/>
+                       style="-fx-font-size: 14px; -fx-text-fill: #c1121f; -fx-font-weight: bold; -fx-wrap-text: true;"/>
 
                 <Label fx:id="deleteCompanyError" styleClass="form-error"/>
 
-                <HBox spacing="10">
+                <HBox spacing="10" alignment="CENTER_LEFT">
                     <Button text="Confirm Delete" onAction="#handleConfirmDeleteCompany" styleClass="form-save-button"/>
                     <Button text="Cancel" onAction="#handleCancelDeleteCompany" styleClass="form-cancel-button"/>
                 </HBox>
