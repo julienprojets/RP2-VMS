@@ -13,14 +13,15 @@ public class Users {
     private final StringProperty ddl;
     private final StringProperty titre;
     private final StringProperty status;
+    private final StringProperty company;
 
     // Constructors
     public Users() {
-        this("", "", "", "", "", "", "", "", "");
+        this("", "", "", "", "", "", "", "", "", "");
     }
 
     public Users(String username, String firstName, String lastName, String email, String role,
-                 String password, String ddl, String titre, String status) {
+                 String password, String ddl, String titre, String status, String company) {
         this.username = new SimpleStringProperty(username);
         this.firstName = new SimpleStringProperty(firstName);
         this.lastName = new SimpleStringProperty(lastName);
@@ -30,6 +31,7 @@ public class Users {
         this.ddl = new SimpleStringProperty(ddl);
         this.titre = new SimpleStringProperty(titre);
         this.status = new SimpleStringProperty(status);
+        this.company = new SimpleStringProperty(company);
     }
 
     // ===== JavaFX properties for TableView =====
@@ -40,6 +42,7 @@ public class Users {
     public StringProperty roleProperty() { return role; }
     public StringProperty statusProperty() { return status; }
     public StringProperty titreProperty() { return titre; }
+    public StringProperty companyProperty() { return company; }
 
     // ===== Getters and Setters =====
     public String getUsername() { return username.get(); }
@@ -68,5 +71,8 @@ public class Users {
 
     public String getStatus() { return status.get(); }
     public void setStatus(String status) { this.status.set(status); }
+
+    public String getCompany() { return company.get(); }
+    public void setCompany(String company) { this.company.set(company); }
 
 }

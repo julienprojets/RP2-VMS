@@ -20,16 +20,19 @@ public class UsersController {
     @FXML private TableColumn<Users, String> lastNameColumn;
     @FXML private TableColumn<Users, String> emailColumn;
     @FXML private TableColumn<Users, String> roleColumn;
+    @FXML private TableColumn<Users, String> companyColumn;
     @FXML private TableColumn<Users, String> statusColumn;
     @FXML private TableColumn<Users, String> titreColumn;
 
     // ADD/EDIT FORM
     @FXML private VBox addForm;
+    @FXML private ScrollPane addFormScrollPane;
     @FXML private Label formTitle;
     @FXML private TextField addUsername, addFirstName, addLastName, addEmail, addDdl, addTitre;
     @FXML private PasswordField addPassword;
     @FXML private ComboBox<String> addRoleCombo;
     @FXML private ComboBox<String> addStatusCombo;
+    @FXML private ComboBox<String> addCompanyCombo;
     @FXML private Label formError;
     @FXML private TextField searchHeaderField;
     @FXML private Button deleteButton;
@@ -41,12 +44,16 @@ public class UsersController {
 
     @FXML
     public void initialize() {
+        // Ensure company column exists in database
+        ensureCompanyColumnExists();
+        
         // SETUP TABLE COLUMNS
         usernameColumn.setCellValueFactory(cell -> cell.getValue().usernameProperty());
         firstNameColumn.setCellValueFactory(cell -> cell.getValue().firstNameProperty());
         lastNameColumn.setCellValueFactory(cell -> cell.getValue().lastNameProperty());
         emailColumn.setCellValueFactory(cell -> cell.getValue().emailProperty());
         roleColumn.setCellValueFactory(cell -> cell.getValue().roleProperty());
+        companyColumn.setCellValueFactory(cell -> cell.getValue().companyProperty());
         statusColumn.setCellValueFactory(cell -> cell.getValue().statusProperty());
         titreColumn.setCellValueFactory(cell -> cell.getValue().titreProperty());
         usersTable.setItems(userList);
@@ -59,6 +66,9 @@ public class UsersController {
         if (addStatusCombo != null) {
             addStatusCombo.getItems().addAll("Active", "Inactive", "Suspended");
         }
+        
+        // Load companies from branches
+        loadCompanies();
 
         // HIDE FORM INITIALLY
         addForm.setVisible(false);
@@ -108,12 +118,55 @@ public class UsersController {
         }
     }
 
+    private void ensureCompanyColumnExists() {
+        try (Connection conn = DBconnection.getConnection()) {
+            DatabaseMetaData metaData = conn.getMetaData();
+            ResultSet columns = metaData.getColumns(null, null, "users", "company");
+            if (!columns.next()) {
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.executeUpdate("ALTER TABLE users ADD COLUMN company VARCHAR(255)");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Note: Company column check: " + e.getMessage());
+        }
+    }
+    
+    private void loadCompanies() {
+        if (addCompanyCombo == null) return;
+        
+        try (Connection conn = DBconnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT DISTINCT company FROM branch WHERE company IS NOT NULL AND company != ''")) {
+            
+            addCompanyCombo.getItems().clear();
+            while (rs.next()) {
+                String company = rs.getString("company");
+                if (company != null && !company.isEmpty()) {
+                    addCompanyCombo.getItems().add(company);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading companies: " + e.getMessage());
+        }
+    }
+    
     private void loadUsers() {
         userList.clear();
         try (Connection conn = DBconnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM users")) {
             while (rs.next()) {
+                String company = null;
+                try {
+                    company = rs.getString("company");
+                } catch (SQLException e) {
+                    // Column doesn't exist yet
+                }
+                if (company == null) {
+                    company = "";
+                }
+                
                 Users user = new Users(
                         rs.getString("username"),
                         rs.getString("first_name_user"),
@@ -123,7 +176,8 @@ public class UsersController {
                         rs.getString("password"),
                         rs.getString("ddl"),
                         rs.getString("titre"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        company
                 );
                 userList.add(user);
             }
@@ -148,7 +202,8 @@ public class UsersController {
                     || user.getLastName().toLowerCase().contains(searchText)
                     || user.getEmail().toLowerCase().contains(searchText)
                     || user.getRole().toLowerCase().contains(searchText)
-                    || user.getStatus().toLowerCase().contains(searchText)) {
+                    || user.getStatus().toLowerCase().contains(searchText)
+                    || (user.getCompany() != null && user.getCompany().toLowerCase().contains(searchText))) {
                 filteredList.add(user);
             }
         }
@@ -194,6 +249,9 @@ public class UsersController {
         }
         if (addStatusCombo != null) {
             addStatusCombo.setValue(selected.getStatus());
+        }
+        if (addCompanyCombo != null) {
+            addCompanyCombo.setValue(selected.getCompany());
         }
         
         // Password field - don't show existing password for security
@@ -294,6 +352,8 @@ public class UsersController {
                      addRoleCombo.getValue() : "";
         String status = addStatusCombo != null && addStatusCombo.getValue() != null ? 
                        addStatusCombo.getValue() : "";
+        String company = addCompanyCombo != null && addCompanyCombo.getValue() != null ? 
+                        addCompanyCombo.getValue() : "";
         String password = addPassword != null ? addPassword.getText().trim() : "";
         String ddl = addDdl.getText() != null ? addDdl.getText().trim() : "";
         String titre = addTitre.getText() != null ? addTitre.getText().trim() : "";
@@ -334,7 +394,7 @@ public class UsersController {
             if (editingUser == null) {
                 // INSERT NEW USER
                 PreparedStatement ps = conn.prepareStatement(
-                        "INSERT INTO users(username, first_name_user, last_name_user, email_user, role, password, ddl, titre, status) VALUES(?,?,?,?,?,?,?,?,?)");
+                        "INSERT INTO users(username, first_name_user, last_name_user, email_user, role, password, ddl, titre, status, company) VALUES(?,?,?,?,?,?,?,?,?,?)");
                 ps.setString(1, username);
                 ps.setString(2, firstName);
                 ps.setString(3, lastName);
@@ -344,6 +404,7 @@ public class UsersController {
                 ps.setString(7, ddl);
                 ps.setString(8, titre);
                 ps.setString(9, status);
+                ps.setString(10, company);
                 ps.executeUpdate();
                 
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -360,7 +421,7 @@ public class UsersController {
                 if (password.isEmpty()) {
                     // Don't update password
                     PreparedStatement ps = conn.prepareStatement(
-                            "UPDATE users SET username=?, first_name_user=?, last_name_user=?, email_user=?, role=?, ddl=?, titre=?, status=? WHERE username=?");
+                            "UPDATE users SET username=?, first_name_user=?, last_name_user=?, email_user=?, role=?, ddl=?, titre=?, status=?, company=? WHERE username=?");
                     ps.setString(1, username);
                     ps.setString(2, firstName);
                     ps.setString(3, lastName);
@@ -369,7 +430,8 @@ public class UsersController {
                     ps.setString(6, ddl);
                     ps.setString(7, titre);
                     ps.setString(8, status);
-                    ps.setString(9, originalUsername);
+                    ps.setString(9, company);
+                    ps.setString(10, originalUsername);
                     
                     int rowsAffected = ps.executeUpdate();
                     if (rowsAffected == 0) {
@@ -379,7 +441,7 @@ public class UsersController {
                 } else {
                     // Update password too
                     PreparedStatement ps = conn.prepareStatement(
-                            "UPDATE users SET username=?, first_name_user=?, last_name_user=?, email_user=?, role=?, password=?, ddl=?, titre=?, status=? WHERE username=?");
+                            "UPDATE users SET username=?, first_name_user=?, last_name_user=?, email_user=?, role=?, password=?, ddl=?, titre=?, status=?, company=? WHERE username=?");
                     ps.setString(1, username);
                     ps.setString(2, firstName);
                     ps.setString(3, lastName);
@@ -389,7 +451,8 @@ public class UsersController {
                     ps.setString(7, ddl);
                     ps.setString(8, titre);
                     ps.setString(9, status);
-                    ps.setString(10, originalUsername);
+                    ps.setString(10, company);
+                    ps.setString(11, originalUsername);
                     
                     int rowsAffected = ps.executeUpdate();
                     if (rowsAffected == 0) {
@@ -429,6 +492,9 @@ public class UsersController {
         }
         if (addStatusCombo != null) {
             addStatusCombo.setValue(null);
+        }
+        if (addCompanyCombo != null) {
+            addCompanyCombo.setValue(null);
         }
         if (addPassword != null) {
             addPassword.clear();

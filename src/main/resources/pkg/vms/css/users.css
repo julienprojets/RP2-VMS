@@ -333,3 +333,33 @@
     -fx-pref-height: 1;
 }
 
+/* Form Scroll Pane */
+.form-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-fit-to-width: true;
+    -fx-max-width: 600;
+    -fx-pref-width: 600;
+    -fx-pref-height: 350;
+    -fx-max-height: 400;
+}
+
+.form-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.form-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 5;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #669bbc;
+    -fx-background-radius: 5;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a8ba8;
+}
+
