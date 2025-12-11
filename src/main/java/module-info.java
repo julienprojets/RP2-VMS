@@ -9,6 +9,11 @@ module pkg.vms {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires com.google.zxing;
+    requires com.google.zxing.javase;
+    requires org.apache.pdfbox;
+    requires java.mail;
+    requires java.desktop;
 
     opens pkg.vms to javafx.fxml;
     exports pkg.vms;

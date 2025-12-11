@@ -1,6 +1,6 @@
 /* ============================================
-   USERS MANAGEMENT PAGE STYLES
-   Matching Login/Dashboard Theme
+   VOUCHERS MANAGEMENT PAGE STYLES
+   Matching Login/Dashboard + Clients Theme
    ============================================ */
 
 .root {
@@ -10,7 +10,7 @@
 /* ----------------------------
    HEADER BAR
    ---------------------------- */
-.users-header {
+.vouchers-header {
     -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #dce6eb 100%);
     -fx-padding: 15 20;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
@@ -74,32 +74,10 @@
     -fx-spacing: 20;
 }
 
-/* Add User Button */
-.add-user-button {
-    -fx-background-color: #003049;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 12 24;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
-}
-
-.add-user-button:hover {
-    -fx-background-color: #004d73;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
-}
-
-.add-user-button:pressed {
-    -fx-background-color: #002837;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
-}
-
 /* ----------------------------
    TABLE STYLING
    ---------------------------- */
-.users-table {
+.vouchers-table {
     -fx-background-color: white;
     -fx-background-radius: 12;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
@@ -157,27 +135,26 @@
    ACTION BUTTONS
    ---------------------------- */
 .action-button {
-    -fx-background-color: #669bbc;
+    -fx-background-color: #003049;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
     -fx-padding: 10 20;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
 }
 
 .action-button:hover {
-    -fx-background-color: #5a8ba8;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
+    -fx-background-color: #004d73;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
 }
 
 .action-button:pressed {
-    -fx-background-color: #4d7a94;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
+    -fx-background-color: #002837;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
 }
 
-/* Delete Button */
 .delete-button {
     -fx-background-color: #c1121f;
     -fx-text-fill: white;
@@ -190,62 +167,38 @@
 }
 
 .delete-button:hover {
-    -fx-background-color: #a00e1a;
+    -fx-background-color: #a0101a;
     -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.4), 12, 0, 0, 3);
 }
 
 .delete-button:pressed {
-    -fx-background-color: #8a0c15;
+    -fx-background-color: #8e0e17;
     -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.2), 4, 0, 0, 1);
 }
 
-/* Export Button */
 .export-button {
-    -fx-background-color: #669bbc;
+    -fx-background-color: #003049;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
     -fx-padding: 10 20;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
 }
 
 .export-button:hover {
-    -fx-background-color: #5a8ba8;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
+    -fx-background-color: #004d73;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
 }
 
 .export-button:pressed {
-    -fx-background-color: #4d7a94;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
+    -fx-background-color: #002837;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
 }
-
-/* Add Button */
-.add-button {
-    -fx-background-color: #669bbc;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 10 20;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
-}
-
-.add-button:hover {
-    -fx-background-color: #5a8ba8;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
-}
-
-.add-button:pressed {
-    -fx-background-color: #4d7a94;
-    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
-}
-
 
 /* ----------------------------
-   ADD/EDIT USER FORM
+   ADD/EDIT VOUCHER FORM (Matching Users/Branches Theme)
    ---------------------------- */
 .user-form {
     -fx-background-color: white;
@@ -287,7 +240,11 @@
     -fx-background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Form Content */
+.form-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
 .form-content {
     -fx-padding: 25;
     -fx-spacing: 20;
@@ -299,7 +256,7 @@
     -fx-text-fill: #003049;
 }
 
-.form-text-field, .form-password-field, .form-combo-box {
+.form-text-field, .form-date-picker, .form-combo-box {
     -fx-background-color: #f8f9fa;
     -fx-border-color: #dee2e6;
     -fx-border-radius: 8;
@@ -309,13 +266,13 @@
     -fx-pref-height: 44;
 }
 
-.form-text-field:focused, .form-password-field:focused, .form-combo-box:focused {
+.form-text-field:focused, .form-date-picker:focused, .form-combo-box:focused {
     -fx-background-color: white;
     -fx-border-color: #003049;
     -fx-border-width: 2;
 }
 
-.form-text-field:hover, .form-password-field:hover, .form-combo-box:hover {
+.form-text-field:hover, .form-date-picker:hover, .form-combo-box:hover {
     -fx-border-color: #669bbc;
 }
 
@@ -340,35 +297,10 @@
     -fx-text-fill: white;
 }
 
-/* Form Error Message */
 .form-error {
     -fx-text-fill: #c1121f;
     -fx-font-size: 13px;
     -fx-wrap-text: true;
-}
-
-/* Form Action Buttons */
-.form-cancel-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #6c757d;
-    -fx-font-size: 14px;
-    -fx-background-radius: 8;
-    -fx-padding: 12 24;
-    -fx-pref-height: 44;
-    -fx-cursor: hand;
-    -fx-border-color: #dee2e6;
-    -fx-border-radius: 8;
-    -fx-border-width: 1;
-}
-
-.form-cancel-button:hover {
-    -fx-background-color: #f8f9fa;
-    -fx-border-color: #adb5bd;
-    -fx-text-fill: #495057;
-}
-
-.form-cancel-button:pressed {
-    -fx-background-color: #e9ecef;
 }
 
 .form-save-button {
@@ -393,39 +325,27 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
 }
 
+.form-cancel-button {
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 12 24;
+    -fx-pref-height: 44;
+    -fx-cursor: hand;
+}
+
+.form-cancel-button:hover {
+    -fx-background-color: #5a6268;
+}
+
+.form-cancel-button:pressed {
+    -fx-background-color: #495057;
+}
+
 /* Separator */
 .separator {
     -fx-background-color: #dee2e6;
     -fx-pref-height: 1;
 }
-
-/* Form Scroll Pane */
-.form-scroll-pane {
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-padding: 0;
-    -fx-fit-to-width: true;
-    -fx-max-width: 600;
-    -fx-pref-width: 600;
-    -fx-pref-height: 350;
-    -fx-max-height: 400;
-}
-
-.form-scroll-pane .viewport {
-    -fx-background-color: transparent;
-}
-
-.form-scroll-pane .scroll-bar:vertical {
-    -fx-background-color: #f0f0f0;
-    -fx-background-radius: 5;
-}
-
-.form-scroll-pane .scroll-bar:vertical .thumb {
-    -fx-background-color: #669bbc;
-    -fx-background-radius: 5;
-}
-
-.form-scroll-pane .scroll-bar:vertical .thumb:hover {
-    -fx-background-color: #5a8ba8;
-}
-
