@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pkg.vms.controller.layout.SidebarController;
+import pkg.vms.util.RedemptionServer;
 
 import java.io.IOException;
 
@@ -44,6 +45,13 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
+        
+        // Start redemption server for mobile QR code scanning
+        try {
+            RedemptionServer.startServer();
+        } catch (Exception e) {
+            System.err.println("Warning: Could not start redemption server: " + e.getMessage());
+        }
 
         // Load Sidebar and connect navigation system
         try {
@@ -168,8 +176,9 @@ public class DashboardController {
                     break;
 
                 case "reports":
-                    // TODO: Load reports view when available
-                    System.out.println("Reports view not yet implemented");
+                    view = FXMLLoader.load(
+                            getClass().getResource("/pkg/vms/fxml/reports.fxml")
+                    );
                     break;
 
                 case "dashboard":

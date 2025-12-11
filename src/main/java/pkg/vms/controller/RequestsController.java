@@ -185,7 +185,7 @@ public class RequestsController implements Initializable {
         requestList.clear();
         try (Connection conn = DBconnection.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM voucher_requests ORDER BY request_id DESC")) {
+             ResultSet rs = stmt.executeQuery("SELECT * FROM voucher_requests WHERE status != 'Redeemed' OR status IS NULL ORDER BY request_id DESC")) {
             while (rs.next()) {
                 VoucherRequest req = new VoucherRequest();
                 req.setRequestId(rs.getInt("request_id"));

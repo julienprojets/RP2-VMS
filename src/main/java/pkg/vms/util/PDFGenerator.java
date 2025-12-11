@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * PDF generation utility for vouchers
@@ -68,9 +69,13 @@ public class PDFGenerator {
                 contentStream.showText("Valid until: " + expiryDate);
                 contentStream.endText();
                 
-                // QR Code
+                // QR Code - Contains URL for mobile redemption
                 try {
-                    byte[] qrBytes = QRCodeGenerator.generateQRCodeBytes(voucherCode, 150);
+                    // Get local IP for QR code URL
+                    String localIP = getLocalIP();
+                    String redemptionURL = "http://" + localIP + ":8080?code=" + voucherCode;
+                    
+                    byte[] qrBytes = QRCodeGenerator.generateQRCodeBytes(redemptionURL, 150);
                     PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, qrBytes, "qr");
                     contentStream.drawImage(pdImage, 400, 600, 150, 150);
                 } catch (Exception e) {
@@ -174,6 +179,17 @@ public class PDFGenerator {
             document.save(pdfFile);
             
             return pdfFile.getAbsolutePath();
+        }
+    }
+    
+    /**
+     * Get local IP address for QR code URL
+     */
+    private static String getLocalIP() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception e) {
+            return "localhost";
         }
     }
 }

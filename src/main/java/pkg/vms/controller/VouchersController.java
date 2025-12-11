@@ -157,49 +157,53 @@ public class VouchersController implements Initializable {
             
             String sql;
             if (hasAssignedColumn && hasRequestRefColumn) {
-                // Filter out vouchers that are assigned to requests
+                // Filter out vouchers that are assigned to requests AND redeemed vouchers
                 sql = "SELECT " + voucherCodeColumn + ", status_voucher, init_date, expiry_date, " +
                       "ref_client, val_voucher, redeemed FROM vouchers " +
                       "WHERE (assigned_to_request = FALSE OR assigned_to_request IS NULL) " +
                       "AND (request_reference IS NULL OR request_reference = '') " +
+                      "AND (redeemed = FALSE OR redeemed IS NULL) " +
                       "ORDER BY init_date DESC";
             } else if (hasAssignedColumn) {
                 sql = "SELECT " + voucherCodeColumn + ", status_voucher, init_date, expiry_date, " +
                       "ref_client, val_voucher, redeemed FROM vouchers " +
-                      "WHERE assigned_to_request = FALSE OR assigned_to_request IS NULL " +
+                      "WHERE (assigned_to_request = FALSE OR assigned_to_request IS NULL) " +
+                      "AND (redeemed = FALSE OR redeemed IS NULL) " +
                       "ORDER BY init_date DESC";
             } else if (hasRequestRefColumn) {
                 // Filter by request_reference if assigned_to_request doesn't exist
                 sql = "SELECT " + voucherCodeColumn + ", status_voucher, init_date, expiry_date, " +
                       "ref_client, val_voucher, redeemed FROM vouchers " +
-                      "WHERE request_reference IS NULL OR request_reference = '' " +
+                      "WHERE (request_reference IS NULL OR request_reference = '') " +
+                      "AND (redeemed = FALSE OR redeemed IS NULL) " +
                       "ORDER BY init_date DESC";
             } else {
-                // Neither column exists, load all vouchers
+                // Neither column exists, filter out redeemed vouchers
                 sql = "SELECT " + voucherCodeColumn + ", status_voucher, init_date, expiry_date, " +
                       "ref_client, val_voucher, redeemed FROM vouchers " +
+                      "WHERE (redeemed = FALSE OR redeemed IS NULL) " +
                       "ORDER BY init_date DESC";
             }
 
             try (Statement stmt = conn.createStatement();
-                 ResultSet rs = stmt.executeQuery(sql)) {
+             ResultSet rs = stmt.executeQuery(sql)) {
 
-                while (rs.next()) {
+            while (rs.next()) {
                     String code = rs.getString(1);
                     String status = rs.getString("status_voucher");
                     if (status == null) status = "Available";
                     
-                    Vouchers v = new Vouchers(
-                            rs.getInt("ref_client"),
+                Vouchers v = new Vouchers(
+                        rs.getInt("ref_client"),
                             code,
                             0.0, // Price not stored here, determined by request
-                            rs.getBoolean("redeemed")
-                    );
-                    v.setInit_date(rs.getDate("init_date"));
-                    v.setExpiry_date(rs.getDate("expiry_date"));
+                        rs.getBoolean("redeemed")
+                );
+                v.setInit_date(rs.getDate("init_date"));
+                v.setExpiry_date(rs.getDate("expiry_date"));
                     v.setStatus_voucher(status);
 
-                    voucherList.add(v);
+                voucherList.add(v);
                 }
             }
         } catch (SQLException e) {
@@ -327,17 +331,17 @@ public class VouchersController implements Initializable {
                     String voucherCodeColumn = getVoucherCodeColumn(conn);
                     String sql = "DELETE FROM vouchers WHERE " + voucherCodeColumn + " = ?";
                     try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                        ps.setString(1, selected.getCode_voucher());
-                        ps.executeUpdate();
+            ps.setString(1, selected.getCode_voucher());
+            ps.executeUpdate();
                     }
 
                     voucherList.remove(selected);
                     showSuccess("Voucher deleted successfully.");
-                } catch (SQLException e) {
-                    e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
                     showError("Error deleting voucher: " + e.getMessage());
                 }
-            }
+        }
         });
     }
 
@@ -367,8 +371,8 @@ public class VouchersController implements Initializable {
                 String code = formCode.getText().trim();
                 if (code.isEmpty()) {
                     formError.setText("Voucher code is required for editing.");
-                    return;
-                }
+                return;
+            }
 
                 try (Connection conn = DBconnection.getConnection()) {
                     String voucherCodeColumn = getVoucherCodeColumn(conn);
@@ -462,8 +466,8 @@ public class VouchersController implements Initializable {
                                 "SELECT column_name FROM information_schema.columns " +
                                 "WHERE table_name = 'vouchers' AND column_name = 'assigned_to_request'")) {
                             hasAssignedColumn = colRs.next();
-                        }
-                        
+            }
+
                         // Insert voucher
                         String insertSql;
                         if (hasAssignedColumn) {
@@ -531,7 +535,7 @@ public class VouchersController implements Initializable {
                         // Code exists, try with suffix
                         attempt++;
                         voucherCode = prefix + String.format("%06d", Integer.parseInt(voucherCode.substring(4)) + attempt);
-                    }
+        }
                 }
             }
         }

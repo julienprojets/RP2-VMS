@@ -310,7 +310,61 @@ public class DatabaseSchema {
         addColumnIfNotExists(conn, "vouchers", "email_sent", "BOOLEAN DEFAULT FALSE");
         addColumnIfNotExists(conn, "vouchers", "email_sent_date", "TIMESTAMP");
         addColumnIfNotExists(conn, "vouchers", "redeemed_by", "VARCHAR(100)");
-        addColumnIfNotExists(conn, "vouchers", "redeemed_branch", "VARCHAR(255)");
+        
+        // Check if redeemed_branch exists and what type it is
+        String dataType = null;
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(
+                "SELECT data_type FROM information_schema.columns " +
+                "WHERE table_name = 'vouchers' AND column_name = 'redeemed_branch'")) {
+            if (rs.next()) {
+                dataType = rs.getString("data_type");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking redeemed_branch column: " + e.getMessage());
+            e.printStackTrace();
+        }
+        
+        // If column exists and is integer, convert it
+        if (dataType != null && ("integer".equalsIgnoreCase(dataType) || "int4".equalsIgnoreCase(dataType))) {
+            // First, find and drop all foreign key constraints on this column
+            try (Statement fkStmt = conn.createStatement();
+                 ResultSet fkRs = fkStmt.executeQuery(
+                    "SELECT tc.constraint_name FROM information_schema.table_constraints tc " +
+                    "JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name " +
+                    "WHERE tc.table_name = 'vouchers' AND kcu.column_name = 'redeemed_branch' " +
+                    "AND tc.constraint_type = 'FOREIGN KEY'")) {
+                while (fkRs.next()) {
+                    String constraintName = fkRs.getString("constraint_name");
+                    try (Statement dropStmt = conn.createStatement()) {
+                        dropStmt.executeUpdate("ALTER TABLE vouchers DROP CONSTRAINT IF EXISTS " + constraintName);
+                        System.out.println("Dropped foreign key constraint: " + constraintName);
+                    } catch (SQLException e) {
+                        System.err.println("Could not drop constraint " + constraintName + ": " + e.getMessage());
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Error finding foreign key constraints: " + e.getMessage());
+            }
+            
+            // Now alter the column type
+            try (Statement alterStmt = conn.createStatement()) {
+                alterStmt.executeUpdate("ALTER TABLE vouchers ALTER COLUMN redeemed_branch TYPE VARCHAR(255) USING redeemed_branch::text");
+                System.out.println("Altered redeemed_branch column from INTEGER to VARCHAR(255)");
+            } catch (SQLException e) {
+                // Try without USING clause (some PostgreSQL versions)
+                try (Statement alterStmt2 = conn.createStatement()) {
+                    alterStmt2.executeUpdate("ALTER TABLE vouchers ALTER COLUMN redeemed_branch TYPE VARCHAR(255)");
+                    System.out.println("Altered redeemed_branch column from INTEGER to VARCHAR(255)");
+                } catch (SQLException e2) {
+                    System.err.println("Could not alter redeemed_branch column: " + e2.getMessage());
+                    e2.printStackTrace();
+                }
+            }
+        } else if (dataType == null) {
+            // Column doesn't exist, add it as VARCHAR
+            addColumnIfNotExists(conn, "vouchers", "redeemed_branch", "VARCHAR(255)");
+        }
         
         // Fix ref_request foreign key constraint and make it nullable
         try (Statement stmt = conn.createStatement()) {

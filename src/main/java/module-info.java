@@ -14,6 +14,7 @@ module pkg.vms {
     requires org.apache.pdfbox;
     requires java.mail;
     requires java.desktop;
+    requires jdk.httpserver;
 
     opens pkg.vms to javafx.fxml;
     exports pkg.vms;
