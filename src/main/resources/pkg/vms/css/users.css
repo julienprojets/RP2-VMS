@@ -177,6 +177,72 @@
     -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
 }
 
+/* Delete Button */
+.delete-button {
+    -fx-background-color: #c1121f;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.3), 8, 0, 0, 2);
+}
+
+.delete-button:hover {
+    -fx-background-color: #a00e1a;
+    -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.4), 12, 0, 0, 3);
+}
+
+.delete-button:pressed {
+    -fx-background-color: #8a0c15;
+    -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.2), 4, 0, 0, 1);
+}
+
+/* Export Button */
+.export-button {
+    -fx-background-color: #669bbc;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+}
+
+.export-button:hover {
+    -fx-background-color: #5a8ba8;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
+}
+
+.export-button:pressed {
+    -fx-background-color: #4d7a94;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
+}
+
+/* Add Button */
+.add-button {
+    -fx-background-color: #669bbc;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+}
+
+.add-button:hover {
+    -fx-background-color: #5a8ba8;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
+}
+
+.add-button:pressed {
+    -fx-background-color: #4d7a94;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
+}
+
 
 /* ----------------------------
    ADD/EDIT USER FORM

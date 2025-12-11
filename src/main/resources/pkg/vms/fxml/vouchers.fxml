@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
+<?import javafx.collections.FXCollections?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="pkg.vms.controller.VouchersController"
@@ -39,8 +40,7 @@
             <VBox styleClass="vouchers-table">
                 <TableView fx:id="voucherTable" prefHeight="270">
                     <columns>
-                        <TableColumn fx:id="codeColumn" text="Voucher Code" prefWidth="150"/>
-                        <TableColumn fx:id="priceColumn" text="Price" prefWidth="120"/>
+                        <TableColumn fx:id="codeColumn" text="Voucher Code" prefWidth="200"/>
                         <TableColumn fx:id="statusColumn" text="Status" prefWidth="140"/>
                         <TableColumn fx:id="initDateColumn" text="Init Date" prefWidth="150"/>
                         <TableColumn fx:id="expiryDateColumn" text="Expiry Date" prefWidth="150"/>
@@ -54,6 +54,11 @@
                     <Insets top="0" left="5" bottom="0" right="0"/>
                 </padding>
 
+                <Button text="+ Add Voucher"
+                        fx:id="addButton"
+                        onAction="#handleAddVoucher"
+                        styleClass="action-button"/>
+
                 <Button text="Edit"
                         fx:id="editButton"
                         onAction="#handleEditVoucher"
@@ -62,67 +67,97 @@
                 <Button text="Delete"
                         fx:id="deleteButton"
                         onAction="#handleDeleteVoucher"
-                        styleClass="action-button"/>
+                        styleClass="delete-button"/>
 
                 <Region HBox.hgrow="ALWAYS"/>
-
-                <Button text="Generate Vouchers"
-                        fx:id="generateButton"
-                        onAction="#handleGenerate"
-                        styleClass="export-button"/>
-
-                <Button text="+ Add Voucher"
-                        fx:id="addButton"
-                        onAction="#handleAddVoucher"
-                        styleClass="add-button"/>
             </HBox>
 
             <Separator styleClass="separator"/>
 
             <!-- ADD / EDIT VOUCHER FORM -->
             <VBox fx:id="addForm"
-                  spacing="12"
+                  spacing="0"
                   visible="false"
                   managed="false"
-                  styleClass="voucher-form">
-
-                <Label fx:id="formTitle"
-                       text="Add/Edit Voucher"
-                       styleClass="form-title"/>
-
-                <TextField fx:id="formCode"
-                           promptText="Voucher Code"
-                           styleClass="form-text-field"/>
-
-                <TextField fx:id="formPrice"
-                           promptText="Price"
-                           styleClass="form-text-field"/>
-
-                <TextField fx:id="formStatus"
-                           promptText="Status"
-                           styleClass="form-text-field"/>
-
-                <DatePicker fx:id="formInitDate"
-                            promptText="Init Date"
-                            styleClass="form-date-picker"/>
-
-                <DatePicker fx:id="formExpiryDate"
-                            promptText="Expiry Date"
-                            styleClass="form-date-picker"/>
-
-                <Label fx:id="formError"
-                       styleClass="form-error"/>
-
-                <HBox spacing="10">
-                    <Button text="Save"
-                            onAction="#handleFormSave"
-                            styleClass="form-save-button"/>
-
-                    <Button text="Cancel"
-                            onAction="#handleCancel"
-                            styleClass="form-cancel-button"/>
+                  styleClass="user-form"
+                  maxWidth="600">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
+                    <Label fx:id="formTitle"
+                           text="Add New Voucher(s)"
+                           styleClass="form-title"
+                           HBox.hgrow="ALWAYS"/>
+                    <Button text="✕" onAction="#handleCancel"
+                           styleClass="close-form-button">
+                        <tooltip><Tooltip text="Close"/></tooltip>
+                    </Button>
                 </HBox>
 
+                <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+                           prefHeight="350" maxHeight="400" styleClass="form-scroll-pane"
+                           pannable="true">
+                    <VBox spacing="20" styleClass="form-content">
+                        <GridPane hgap="15" vgap="15">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="150" prefWidth="150"/>
+                                <ColumnConstraints minWidth="250" prefWidth="250" hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            
+                            <!-- Voucher Code -->
+                            <Label text="Voucher Code:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="formCode"
+                                       promptText="Leave empty for auto-generation"
+                                       styleClass="form-text-field"
+                                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                            <!-- Quantity -->
+                            <Label text="Quantity:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="formQuantity"
+                                       promptText="1"
+                                       styleClass="form-text-field"
+                                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                            <!-- Status -->
+                            <Label text="Status:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <ComboBox fx:id="formStatus"
+                                      promptText="Select Status"
+                                      styleClass="form-combo-box"
+                                      GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                            <!-- Init Date -->
+                            <Label text="Init Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <DatePicker fx:id="formInitDate"
+                                        promptText="Init Date"
+                                        styleClass="form-date-picker"
+                                        GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                            <!-- Expiry Date -->
+                            <Label text="Expiry Date:" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <DatePicker fx:id="formExpiryDate"
+                                        promptText="Expiry Date"
+                                        styleClass="form-date-picker"
+                                        GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                        </GridPane>
+
+                        <Label fx:id="formError"
+                               styleClass="form-error"/>
+
+                        <HBox spacing="10" alignment="CENTER_RIGHT">
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="Save"
+                                    onAction="#handleFormSave"
+                                    styleClass="form-save-button"/>
+
+                            <Button text="Cancel"
+                                    onAction="#handleCancel"
+                                    styleClass="form-cancel-button"/>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
             </VBox>
 
         </VBox>

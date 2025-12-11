@@ -52,6 +52,7 @@
                     <Insets top="0" right="0" bottom="0" left="5"/>
                 </padding>
 
+                <Button text="+ Add New Client" onAction="#handleAdd" styleClass="action-button"/>
                 <Button text="View Details" onAction="#handleViewDetails" styleClass="action-button"/>
                 <Button text="Edit" onAction="#handleEdit" styleClass="action-button"/>
                 <Button text="Delete" onAction="#handleDelete" styleClass="action-button"/>
