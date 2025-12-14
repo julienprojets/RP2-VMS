@@ -86,9 +86,6 @@ public class RequestsController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize database schema
-        DatabaseSchema.ensureSchemaExists();
-        
         // Setup table columns
         referenceColumn.setCellValueFactory(new PropertyValueFactory<>("requestReference"));
         clientColumn.setCellValueFactory(new PropertyValueFactory<>("clientName"));
@@ -98,7 +95,7 @@ public class RequestsController implements Initializable {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         paymentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
 
-        // Setup filters
+        // Setup filters - initialize with empty list, will be updated when data loads
         filteredRequests = new FilteredList<>(requestList);
         requestsTable.setItems(filteredRequests);
 
@@ -109,12 +106,20 @@ public class RequestsController implements Initializable {
 
         paymentStatusCombo.getItems().addAll("unpaid", "paid");
 
-        // Load data
-        loadClients();
-        loadRequests();
-
         // Setup client ComboBox to display client names properly
         setupClientComboBox();
+
+        // Load data in background thread to prevent UI freezing
+        new Thread(() -> {
+            // Initialize database schema (only once, not blocking)
+            try {
+                DatabaseSchema.ensureSchemaExists();
+            } catch (Exception e) {
+                System.err.println("Error ensuring schema: " + e.getMessage());
+            }
+            loadClients();
+            loadRequests();
+        }).start();
 
         // Hide forms initially
         addForm.setVisible(false);
@@ -146,10 +151,15 @@ public class RequestsController implements Initializable {
                 );
                 clientList.add(client);
             }
-            clientCombo.setItems(clientList);
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                clientCombo.setItems(clientList);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Error loading clients: " + e.getMessage());
+            javafx.application.Platform.runLater(() -> {
+                showError("Error loading clients: " + e.getMessage());
+            });
         }
     }
     
@@ -207,9 +217,16 @@ public class RequestsController implements Initializable {
                 req.setProcessedBy(rs.getString("processed_by"));
                 requestList.add(req);
             }
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                filteredRequests = new FilteredList<>(requestList);
+                requestsTable.setItems(filteredRequests);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Error loading requests: " + e.getMessage());
+            javafx.application.Platform.runLater(() -> {
+                showError("Error loading requests: " + e.getMessage());
+            });
         }
     }
 

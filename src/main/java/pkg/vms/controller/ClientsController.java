@@ -65,7 +65,10 @@ public class ClientsController {
         colAddress.setCellValueFactory(cell -> cell.getValue().address_clientProperty());
         colPhone.setCellValueFactory(cell -> cell.getValue().phone_clientProperty());
 
-        loadClients();
+        // Load data in background thread to prevent UI freezing
+        new Thread(() -> {
+            loadClients();
+        }).start();
         
         // Add Enter key support for search field
         if (searchHeaderField != null) {
@@ -109,7 +112,10 @@ public class ClientsController {
         try {
             data.clear();
             data.addAll(dao.getAll());
-            clientsTable.setItems(data);
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                clientsTable.setItems(data);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }

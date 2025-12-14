@@ -44,9 +44,6 @@ public class UsersController {
 
     @FXML
     public void initialize() {
-        // Ensure company column exists in database
-        ensureCompanyColumnExists();
-        
         // SETUP TABLE COLUMNS
         usernameColumn.setCellValueFactory(cell -> cell.getValue().usernameProperty());
         firstNameColumn.setCellValueFactory(cell -> cell.getValue().firstNameProperty());
@@ -57,7 +54,14 @@ public class UsersController {
         statusColumn.setCellValueFactory(cell -> cell.getValue().statusProperty());
         titreColumn.setCellValueFactory(cell -> cell.getValue().titreProperty());
         usersTable.setItems(userList);
-        loadUsers();
+        
+        // Load data in background thread to prevent UI freezing
+        new Thread(() -> {
+            // Ensure company column exists in database
+            ensureCompanyColumnExists();
+            loadUsers();
+            loadCompanies();
+        }).start();
 
         // SETUP COMBO BOXES
         if (addRoleCombo != null) {
@@ -66,9 +70,6 @@ public class UsersController {
         if (addStatusCombo != null) {
             addStatusCombo.getItems().addAll("Active", "Inactive", "Suspended");
         }
-        
-        // Load companies from branches
-        loadCompanies();
 
         // HIDE FORM INITIALLY
         addForm.setVisible(false);
@@ -139,13 +140,18 @@ public class UsersController {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT DISTINCT company FROM branch WHERE company IS NOT NULL AND company != ''")) {
             
-            addCompanyCombo.getItems().clear();
+            javafx.collections.ObservableList<String> companies = javafx.collections.FXCollections.observableArrayList();
             while (rs.next()) {
                 String company = rs.getString("company");
                 if (company != null && !company.isEmpty()) {
-                    addCompanyCombo.getItems().add(company);
+                    companies.add(company);
                 }
             }
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                addCompanyCombo.getItems().clear();
+                addCompanyCombo.getItems().addAll(companies);
+            });
         } catch (SQLException e) {
             System.out.println("Error loading companies: " + e.getMessage());
         }
@@ -181,9 +187,15 @@ public class UsersController {
                 );
                 userList.add(user);
             }
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                usersTable.setItems(userList);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Error loading users: " + e.getMessage());
+            javafx.application.Platform.runLater(() -> {
+                showError("Error loading users: " + e.getMessage());
+            });
         }
     }
 
