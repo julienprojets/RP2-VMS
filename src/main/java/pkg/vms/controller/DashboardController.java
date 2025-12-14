@@ -46,12 +46,14 @@ public class DashboardController {
     @FXML
     public void initialize() {
         
-        // Start redemption server for mobile QR code scanning
-        try {
-            RedemptionServer.startServer();
-        } catch (Exception e) {
-            System.err.println("Warning: Could not start redemption server: " + e.getMessage());
-        }
+        // Start redemption server for mobile QR code scanning in background thread
+        new Thread(() -> {
+            try {
+                RedemptionServer.startServer();
+            } catch (Exception e) {
+                System.err.println("Warning: Could not start redemption server: " + e.getMessage());
+            }
+        }).start();
 
         // Load Sidebar and connect navigation system
         try {

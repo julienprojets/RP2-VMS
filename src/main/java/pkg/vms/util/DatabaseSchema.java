@@ -13,27 +13,51 @@ import java.sql.Statement;
  */
 public class DatabaseSchema {
     
+    private static volatile boolean schemaChecked = false;
+    private static final Object schemaCheckLock = new Object();
+    
     public static void ensureSchemaExists() {
-        Connection conn = null;
-        try {
-            conn = DBconnection.getConnection();
-            if (conn != null && !conn.isClosed()) {
-                ensureVoucherRequestsTable(conn);
-                ensureInvoicesTable(conn);
-                ensureVoucherStoresTable(conn);
-                // ensureRedemptionsTable(conn); // Removed - redemption functionality not used
-                ensureAuditTrailTable(conn);
-                ensureVouchersTable(conn); // Ensure vouchers table exists first
-                updateVouchersTable(conn); // Then update/add columns
-                updateRequestsTable(conn);
-                System.out.println("Database schema verified/updated successfully.");
+        // Only check schema once per application run to avoid repeated database queries
+        if (schemaChecked) {
+            return;
+        }
+        
+        synchronized (schemaCheckLock) {
+            // Double-check pattern
+            if (schemaChecked) {
+                return;
             }
-        } catch (Exception e) {
-            System.err.println("Error updating database schema: " + e.getMessage());
-            e.printStackTrace();
-        } finally {
-            // Don't close the connection - let DBconnection manage it
-            // The static connection in DBconnection should remain open
+            Connection conn = null;
+            try {
+                conn = DBconnection.getConnection();
+                if (conn != null && !conn.isClosed()) {
+                    ensureVoucherRequestsTable(conn);
+                    ensureInvoicesTable(conn);
+                    ensureVoucherStoresTable(conn);
+                    // ensureRedemptionsTable(conn); // Removed - redemption functionality not used
+                    ensureAuditTrailTable(conn);
+                    ensureVouchersTable(conn); // Ensure vouchers table exists first
+                    updateVouchersTable(conn); // Then update/add columns
+                    updateRequestsTable(conn);
+                    System.out.println("Database schema verified/updated successfully.");
+                    schemaChecked = true;
+                }
+            } catch (Exception e) {
+                System.err.println("Error updating database schema: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                // Don't close the connection - let DBconnection manage it
+                // The static connection in DBconnection should remain open
+            }
+        }
+    }
+    
+    /**
+     * Reset schema check flag (useful for testing or when schema changes)
+     */
+    public static void resetSchemaCheck() {
+        synchronized (schemaCheckLock) {
+            schemaChecked = false;
         }
     }
     

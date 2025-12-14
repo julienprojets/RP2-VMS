@@ -68,9 +68,6 @@ public class VouchersController implements Initializable {
        ============================ */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Ensure database schema is up to date
-        DatabaseSchema.ensureSchemaExists();
-        
         // Setup table columns
         codeColumn.setCellValueFactory(cell -> {
             String code = cell.getValue().getCode_voucher();
@@ -112,7 +109,16 @@ public class VouchersController implements Initializable {
         formStatus.getItems().addAll("Available", "Reserved", "Active", "Redeemed", "Expired");
         formStatus.setValue("Available");
 
-        loadVouchers();
+        // Load data in background thread to prevent UI freezing
+        new Thread(() -> {
+            // Ensure database schema is up to date (only once, not blocking)
+            try {
+                DatabaseSchema.ensureSchemaExists();
+            } catch (Exception e) {
+                System.err.println("Error ensuring schema: " + e.getMessage());
+            }
+            loadVouchers();
+        }).start();
     }
     
     private String getVoucherCodeColumn(Connection conn) throws SQLException {
@@ -134,7 +140,9 @@ public class VouchersController implements Initializable {
        ============================ */
     private void loadVouchers() {
         voucherList.clear();
-        try (Connection conn = DBconnection.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = DBconnection.getConnection();
             String voucherCodeColumn = getVoucherCodeColumn(conn);
             
             // Check if assigned_to_request column exists
@@ -206,9 +214,18 @@ public class VouchersController implements Initializable {
                 voucherList.add(v);
                 }
             }
+            
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                voucherTable.setItems(voucherList);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Error loading vouchers: " + e.getMessage());
+            javafx.application.Platform.runLater(() -> {
+                showError("Error loading vouchers: " + e.getMessage());
+            });
+        } finally {
+            // Don't close connection - let DBconnection manage it
         }
     }
     

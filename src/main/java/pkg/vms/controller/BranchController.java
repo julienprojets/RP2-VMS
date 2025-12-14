@@ -81,14 +81,17 @@ public class BranchController {
         filteredBranches = new FilteredList<>(branchList, p -> true);
         branchTable.setItems(filteredBranches);
 
-        // Ensure company, phone, and industry columns exist in database
-        ensureCompanyColumnExists();
-        ensurePhoneColumnExists();
-        ensureIndustryColumnExists();
-
-        loadBranches();
-        loadCompanies();
-        loadUsers();
+        // Load data in background thread to prevent UI freezing
+        new Thread(() -> {
+            // Ensure company, phone, and industry columns exist in database
+            ensureCompanyColumnExists();
+            ensurePhoneColumnExists();
+            ensureIndustryColumnExists();
+            
+            loadBranches();
+            loadCompanies();
+            loadUsers();
+        }).start();
 
         // Add Enter key support for search field
         if (searchHeaderField != null) {
@@ -221,8 +224,13 @@ public class BranchController {
                 branchList.add(branch);
             }
 
-            // Refresh company filter
-            loadCompanies();
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                filteredBranches = new FilteredList<>(branchList, p -> true);
+                branchTable.setItems(filteredBranches);
+                // Refresh company filter
+                loadCompanies();
+            });
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -257,10 +265,15 @@ public class BranchController {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT username FROM users")) {
 
-            addResponsibleCombo.getItems().clear();
+            javafx.collections.ObservableList<String> usernames = javafx.collections.FXCollections.observableArrayList();
             while (rs.next()) {
-                addResponsibleCombo.getItems().add(rs.getString("username"));
+                usernames.add(rs.getString("username"));
             }
+            // Update UI on JavaFX thread
+            javafx.application.Platform.runLater(() -> {
+                addResponsibleCombo.getItems().clear();
+                addResponsibleCombo.getItems().addAll(usernames);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
