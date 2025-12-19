@@ -992,7 +992,24 @@ public class RedemptionServer {
                         <div class="form-group">
                             <label for="voucherCode">Voucher Code *</label>
                             <input type="text" id="voucherCode" name="voucherCode" 
-                                   placeholder="Scan QR code or enter code" required autofocus>
+                                   placeholder="Enter voucher code manually or scan QR code" required autofocus>
+                            <div style="margin-top: 10px; text-align: center;">
+                                <button type="button" class="btn btn-check" onclick="toggleScanner()" 
+                                        id="scanBtn" style="width: auto; padding: 12px 30px;">
+                                    📷 Scan QR Code with Camera
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- QR Code Scanner -->
+                        <div id="scannerContainer" style="display: none; margin-bottom: 20px;">
+                            <video id="scannerVideo" style="width: 100%; max-width: 400px; border-radius: 8px; background: #000;"></video>
+                            <canvas id="scannerCanvas" style="display: none;"></canvas>
+                            <div style="text-align: center; margin-top: 10px;">
+                                <button type="button" class="btn btn-check" onclick="stopScanner()" style="background: #dc3545;">
+                                    Stop Scanning
+                                </button>
+                            </div>
                         </div>
                         
                         <button type="button" class="btn btn-check" onclick="checkVoucher()">Check Voucher</button>
@@ -1026,10 +1043,13 @@ public class RedemptionServer {
                     <div id="message" class="message"></div>
                 </div>
                 
+                <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
                 <script>
                     const form = document.getElementById('redemptionForm');
                     const messageDiv = document.getElementById('message');
                     const voucherInfo = document.getElementById('voucherInfo');
+                    let scannerStream = null;
+                    let scanning = false;
                     
                     // Auto-fill voucher code from URL parameter (if scanned)
                     const urlParams = new URLSearchParams(window.location.search);
@@ -1037,6 +1057,152 @@ public class RedemptionServer {
                     if (code) {
                         document.getElementById('voucherCode').value = code;
                         checkVoucher();
+                    }
+                    
+                    // QR Code Scanner Functions
+                    async function toggleScanner() {
+                        if (scanning) {
+                            stopScanner();
+                        } else {
+                            startScanner();
+                        }
+                    }
+                    
+                    async function startScanner() {
+                        const scannerContainer = document.getElementById('scannerContainer');
+                        const scannerVideo = document.getElementById('scannerVideo');
+                        const scannerCanvas = document.getElementById('scannerCanvas');
+                        const scanBtn = document.getElementById('scanBtn');
+                        
+                        try {
+                            // Request camera access
+                            scannerStream = await navigator.mediaDevices.getUserMedia({
+                                video: { 
+                                    facingMode: 'environment', // Use back camera on mobile
+                                    width: { ideal: 1280 },
+                                    height: { ideal: 720 }
+                                }
+                            });
+                            
+                            scannerVideo.srcObject = scannerStream;
+                            scannerVideo.setAttribute('playsinline', 'true'); // Important for iOS
+                            await scannerVideo.play();
+                            
+                            scannerContainer.style.display = 'block';
+                            scanBtn.textContent = '📷 Scanning...';
+                            scanning = true;
+                            
+                            // Start scanning loop
+                            scanQRCode();
+                            
+                        } catch (error) {
+                            console.error('Error accessing camera:', error);
+                            showMessage('Unable to access camera. Please allow camera permissions and try again.', 'error');
+                            if (error.name === 'NotAllowedError') {
+                                showMessage('Camera permission denied. Please allow camera access in your browser settings.', 'error');
+                            } else if (error.name === 'NotFoundError') {
+                                showMessage('No camera found. Please use a device with a camera.', 'error');
+                            }
+                        }
+                    }
+                    
+                    function stopScanner() {
+                        scanning = false;
+                        if (scannerStream) {
+                            scannerStream.getTracks().forEach(track => track.stop());
+                            scannerStream = null;
+                        }
+                        const scannerContainer = document.getElementById('scannerContainer');
+                        const scannerVideo = document.getElementById('scannerVideo');
+                        const scanBtn = document.getElementById('scanBtn');
+                        
+                        scannerVideo.srcObject = null;
+                        scannerContainer.style.display = 'none';
+                        scanBtn.textContent = '📷 Scan';
+                    }
+                    
+                    function scanQRCode() {
+                        const scannerVideo = document.getElementById('scannerVideo');
+                        const scannerCanvas = document.getElementById('scannerCanvas');
+                        const context = scannerCanvas.getContext('2d');
+                        
+                        if (!scanning || !scannerVideo.readyState || scannerVideo.readyState !== scannerVideo.HAVE_ENOUGH_DATA) {
+                            if (scanning) {
+                                requestAnimationFrame(scanQRCode);
+                            }
+                            return;
+                        }
+                        
+                        // Set canvas dimensions to match video
+                        scannerCanvas.width = scannerVideo.videoWidth;
+                        scannerCanvas.height = scannerVideo.videoHeight;
+                        
+                        // Draw video frame to canvas
+                        context.drawImage(scannerVideo, 0, 0, scannerCanvas.width, scannerCanvas.height);
+                        
+                        // Get image data
+                        const imageData = context.getImageData(0, 0, scannerCanvas.width, scannerCanvas.height);
+                        
+                        // Scan for QR code
+                        if (typeof jsQR !== 'undefined') {
+                            const code = jsQR(imageData.data, imageData.width, imageData.height);
+                            
+                            if (code) {
+                                // QR code found!
+                                const voucherCode = extractVoucherCodeFromURL(code.data);
+                                if (voucherCode) {
+                                    document.getElementById('voucherCode').value = voucherCode;
+                                    stopScanner();
+                                    checkVoucher();
+                                    showMessage('QR code scanned successfully!', 'success');
+                                } else {
+                                    // Try using the raw data as voucher code
+                                    document.getElementById('voucherCode').value = code.data;
+                                    stopScanner();
+                                    checkVoucher();
+                                    showMessage('QR code scanned successfully!', 'success');
+                                }
+                                return;
+                            }
+                        } else {
+                            // Fallback: Try to extract voucher code from URL if jsQR not loaded
+                            console.warn('jsQR library not loaded, using fallback method');
+                        }
+                        
+                        // Continue scanning
+                        if (scanning) {
+                            requestAnimationFrame(scanQRCode);
+                        }
+                    }
+                    
+                    function extractVoucherCodeFromURL(url) {
+                        // Extract voucher code from URL like: http://192.168.1.1:8080?code=VCHR000001
+                        // or https://domain.com/redeem?code=VCHR000001
+                        try {
+                            const urlObj = new URL(url);
+                            const code = urlObj.searchParams.get('code');
+                            if (code) {
+                                return code;
+                            }
+                            // If no code parameter, check if URL ends with voucher code
+                            const pathParts = urlObj.pathname.split('/');
+                            const lastPart = pathParts[pathParts.length - 1];
+                            if (lastPart && lastPart.match(/^[A-Z0-9-]+$/)) {
+                                return lastPart;
+                            }
+                        } catch (e) {
+                            // If URL parsing fails, try regex
+                            const match = url.match(/[?&]code=([A-Z0-9-]+)/i);
+                            if (match) {
+                                return match[1];
+                            }
+                            // Try to find voucher code pattern in URL
+                            const codeMatch = url.match(/(VCHR|VR)[0-9-]+/i);
+                            if (codeMatch) {
+                                return codeMatch[0];
+                            }
+                        }
+                        return null;
                     }
                     
                     async function checkVoucher() {

@@ -105,9 +105,9 @@ public class VouchersController implements Initializable {
         addForm.setVisible(false);
         addForm.setManaged(false);
 
-        // Setup status ComboBox
-        formStatus.getItems().addAll("Available", "Reserved", "Active", "Redeemed", "Expired");
-        formStatus.setValue("Available");
+        // Setup status ComboBox - Only Active and Reserved for new vouchers
+        formStatus.getItems().addAll("Active", "Reserved");
+        formStatus.setValue("Active");
 
         // Load data in background thread to prevent UI freezing
         new Thread(() -> {
@@ -281,7 +281,7 @@ public class VouchersController implements Initializable {
 
         formCode.clear();
         formQuantity.setText("1");
-        formStatus.setValue("Available");
+        formStatus.setValue("Active");
         formInitDate.setValue(LocalDate.now());
         formExpiryDate.setValue(LocalDate.now().plusDays(365));
         formError.setText("");
@@ -308,7 +308,13 @@ public class VouchersController implements Initializable {
 
         formCode.setText(selected.getCode_voucher());
         formQuantity.setText("1");
-        formStatus.setValue(selected.getStatus_voucher() != null ? selected.getStatus_voucher() : "Available");
+        // When editing, set status to Active or Reserved (if voucher has one of these), otherwise default to Active
+        String currentStatus = selected.getStatus_voucher();
+        if (currentStatus != null && (currentStatus.equals("Active") || currentStatus.equals("Reserved"))) {
+            formStatus.setValue(currentStatus);
+        } else {
+            formStatus.setValue("Active");
+        }
 
         if (selected.getInit_date() != null)
             formInitDate.setValue(new java.sql.Date(selected.getInit_date().getTime()).toLocalDate());
