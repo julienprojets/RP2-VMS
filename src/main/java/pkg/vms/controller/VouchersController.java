@@ -105,7 +105,7 @@ public class VouchersController implements Initializable {
         addForm.setVisible(false);
         addForm.setManaged(false);
 
-        // Setup status ComboBox - Only Active and Reserved for new vouchers
+        // Setup status ComboBox - only Active and Reserved for new vouchers
         formStatus.getItems().addAll("Active", "Reserved");
         formStatus.setValue("Active");
 
@@ -308,7 +308,7 @@ public class VouchersController implements Initializable {
 
         formCode.setText(selected.getCode_voucher());
         formQuantity.setText("1");
-        // When editing, set status to Active or Reserved (if voucher has one of these), otherwise default to Active
+        // For editing, show existing status if it's Active or Reserved, otherwise default to Active
         String currentStatus = selected.getStatus_voucher();
         if (currentStatus != null && (currentStatus.equals("Active") || currentStatus.equals("Reserved"))) {
             formStatus.setValue(currentStatus);

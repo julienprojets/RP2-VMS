@@ -86,6 +86,8 @@ public class ReportsController implements Initializable {
             javafx.application.Platform.runLater(() -> {
                 updateStatistics();
                 updateCharts();
+                // Ensure date axis labels are properly configured after chart updates
+                configureDateAxis();
             });
         }).start();
     }
@@ -424,7 +426,9 @@ public class ReportsController implements Initializable {
         redeemedLabel.setText(String.valueOf(redeemed));
         activeLabel.setText(String.valueOf(active));
         expiredLabel.setText(String.valueOf(expired));
-        totalValueLabel.setText(String.format("Rs %.2f", totalValue));
+        // Format total value with thousand separators for better readability
+        java.text.DecimalFormat df = new java.text.DecimalFormat("#,##0.00");
+        totalValueLabel.setText("Rs " + df.format(totalValue));
     }
     
     private void updateCharts() {
@@ -444,32 +448,28 @@ public class ReportsController implements Initializable {
         statusPieChart.setTitle("Voucher Status Distribution");
         
         // Update Bar Chart - Redemptions Over Time
-        Map<String, Integer> redemptionByDate = new HashMap<>();
+        // Use LocalDate as key for proper sorting, then format for display
+        Map<LocalDate, Integer> redemptionByDate = new HashMap<>();
         for (Vouchers v : allVouchers) {
             if (v.isRedeemed() && v.getDate_redeemed() != null) {
-                String dateStr = new java.sql.Date(v.getDate_redeemed().getTime()).toLocalDate()
-                    .format(DateTimeFormatter.ofPattern("MMM dd"));
-                redemptionByDate.put(dateStr, redemptionByDate.getOrDefault(dateStr, 0) + 1);
+                LocalDate redeemedDate = new java.sql.Date(v.getDate_redeemed().getTime()).toLocalDate();
+                redemptionByDate.put(redeemedDate, redemptionByDate.getOrDefault(redeemedDate, 0) + 1);
             }
         }
         
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Redemptions");
         
-        // Sort dates
-        List<String> sortedDates = new ArrayList<>(redemptionByDate.keySet());
-        sortedDates.sort((d1, d2) -> {
-            try {
-                LocalDate date1 = LocalDate.parse(d1, DateTimeFormatter.ofPattern("MMM dd"));
-                LocalDate date2 = LocalDate.parse(d2, DateTimeFormatter.ofPattern("MMM dd"));
-                return date1.compareTo(date2);
-            } catch (Exception e) {
-                return d1.compareTo(d2);
-            }
-        });
+        // Sort dates using LocalDate for proper chronological order
+        List<LocalDate> sortedDates = new ArrayList<>(redemptionByDate.keySet());
+        sortedDates.sort(LocalDate::compareTo);
         
-        for (String date : sortedDates) {
-            series.getData().add(new XYChart.Data<>(date, redemptionByDate.get(date)));
+        // Format dates with compact format to prevent overlapping (dd/MM)
+        DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM");
+        
+        for (LocalDate date : sortedDates) {
+            String dateStr = date.format(displayFormatter);
+            series.getData().add(new XYChart.Data<>(dateStr, redemptionByDate.get(date)));
         }
         
         redemptionBarChart.getData().clear();
@@ -477,6 +477,19 @@ public class ReportsController implements Initializable {
             redemptionBarChart.getData().add(series);
         }
         redemptionBarChart.setTitle("Redemptions Over Time");
+    }
+    
+    private void configureDateAxis() {
+        if (dateAxis != null) {
+            dateAxis.setTickLabelRotation(-45);
+            dateAxis.setAnimated(false);
+            dateAxis.setTickLabelGap(3);
+            // Set smaller font for better fit
+            dateAxis.setTickLabelFont(javafx.scene.text.Font.font(9));
+            // Set side margin to give more space for rotated labels
+            dateAxis.setStartMargin(10);
+            dateAxis.setEndMargin(10);
+        }
     }
     
     @FXML

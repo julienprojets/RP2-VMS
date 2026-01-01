@@ -54,9 +54,9 @@
                         <Label text="Expired" styleClass="stat-label"/>
                         <Label fx:id="expiredLabel" text="0" styleClass="stat-value"/>
                     </VBox>
-                    <VBox styleClass="stat-card" spacing="5">
+                    <VBox styleClass="stat-card" spacing="5" prefWidth="220" minWidth="220">
                         <Label text="Total Value" styleClass="stat-label"/>
-                        <Label fx:id="totalValueLabel" text="Rs 0.00" styleClass="stat-value"/>
+                        <Label fx:id="totalValueLabel" text="Rs 0.00" styleClass="stat-value" wrapText="true"/>
                     </VBox>
                 </HBox>
 
@@ -115,12 +115,12 @@
                         </VBox>
                         <VBox spacing="10" HBox.hgrow="ALWAYS">
                             <Label text="Redemptions Over Time" styleClass="chart-title"/>
-                            <BarChart fx:id="redemptionBarChart" prefHeight="300" prefWidth="500">
+                            <BarChart fx:id="redemptionBarChart" prefHeight="300" prefWidth="550">
                                 <xAxis>
                                     <CategoryAxis fx:id="dateAxis" label="Date"/>
                                 </xAxis>
                                 <yAxis>
-                                    <NumberAxis fx:id="countAxis" label="Number of Redemptions"/>
+                                    <NumberAxis fx:id="countAxis" label="No of Redemptions"/>
                                 </yAxis>
                             </BarChart>
                         </VBox>

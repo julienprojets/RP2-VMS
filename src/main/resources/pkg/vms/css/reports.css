@@ -54,9 +54,11 @@
 }
 
 .stat-value {
-    -fx-font-size: 32px;
+    -fx-font-size: 28px;
     -fx-text-fill: #003049;
     -fx-font-weight: bold;
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
 }
 
 /* ----------------------------
@@ -258,6 +260,12 @@
 .axis {
     -fx-tick-label-fill: #003049;
     -fx-font-size: 12px;
+}
+
+/* Category Axis (Date Axis) specific styling */
+.category-axis {
+    -fx-tick-label-font-size: 9px;
+    -fx-tick-label-rotation: -45;
 }
 
 .axis-label {
