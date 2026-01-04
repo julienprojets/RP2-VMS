@@ -58,7 +58,6 @@ public class ClientsController {
 
     @FXML
     public void initialize() {
-
         colId.setCellValueFactory(cell -> cell.getValue().ref_clientProperty().asObject());
         colName.setCellValueFactory(cell -> cell.getValue().nom_clientProperty());
         colEmail.setCellValueFactory(cell -> cell.getValue().email_clientProperty());
@@ -236,7 +235,6 @@ public class ClientsController {
         detailsPane.setManaged(false);
 
         isEditMode = true;
-
         formTitle.setText("Edit Client");
         formSaveButton.setText("Update");
 

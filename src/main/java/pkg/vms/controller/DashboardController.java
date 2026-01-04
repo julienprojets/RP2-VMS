@@ -13,6 +13,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pkg.vms.controller.layout.SidebarController;
 import pkg.vms.util.RedemptionServer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 
 import java.io.IOException;
 
@@ -45,7 +49,6 @@ public class DashboardController {
 
     @FXML
     public void initialize() {
-        
         // Start redemption server for mobile QR code scanning in background thread
         new Thread(() -> {
             try {
@@ -210,9 +213,14 @@ public class DashboardController {
     }
 
     public void setUserInfo(String username, String role) {
-        usernameLabel.setText("Logged in as: " + username);
-        roleLabel.setText("Role: " + role);
         currentUserRole = role;
+        
+        if (usernameLabel != null) {
+            usernameLabel.setText("Logged in as: " + username);
+        }
+        if (roleLabel != null) {
+            roleLabel.setText("Role: " + role);
+        }
         
         // Configure role-based access control
         configureRoleBasedAccess(role);
@@ -222,7 +230,7 @@ public class DashboardController {
      * Configures access control for dashboard buttons and sidebar buttons based on user role
      * Superuser - access all buttons (all enabled)
      * Admin & Accountant - only Requests and Clients enabled (others disabled/greyed)
-     * Approver - only Vouchers and Reports enabled (others disabled/greyed)
+     * Approver - Vouchers, Reports, and Requests enabled (others disabled/greyed)
      */
     private void configureRoleBasedAccess(String role) {
         if (role == null) {
@@ -249,8 +257,8 @@ public class DashboardController {
             setDashboardButtonEnabled(vboxUsers, iconUsers, false);
             setDashboardButtonEnabled(vboxReports, iconReports, false);
         } else if (roleLower.equals("approver")) {
-            // Approver - only Vouchers and Reports enabled
-            setDashboardButtonEnabled(vboxRequests, iconRequests, false);
+            // Approver - Vouchers, Reports, and Requests enabled
+            setDashboardButtonEnabled(vboxRequests, iconRequests, true);
             setDashboardButtonEnabled(vboxClients, iconClients, false);
             setDashboardButtonEnabled(vboxVouchers, iconVouchers, true);
             setDashboardButtonEnabled(vboxBranches, iconBranches, false);

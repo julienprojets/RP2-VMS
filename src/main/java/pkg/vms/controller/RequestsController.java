@@ -99,6 +99,7 @@ public class RequestsController implements Initializable {
         filteredRequests = new FilteredList<>(requestList);
         requestsTable.setItems(filteredRequests);
 
+        // Setup filter options
         statusFilter.getItems().addAll("All", "initiated", "approved", "rejected", "completed");
         statusFilter.setValue("All");
         paymentFilter.getItems().addAll("All", "unpaid", "paid");
@@ -134,6 +135,53 @@ public class RequestsController implements Initializable {
         statusFilter.valueProperty().addListener((obs, old, val) -> applyFilters());
         paymentFilter.valueProperty().addListener((obs, old, val) -> applyFilters());
         searchField.textProperty().addListener((obs, old, val) -> applyFilters());
+        
+        // Configure role-based access control
+        configureRoleBasedAccess();
+    }
+    
+    /**
+     * Configures button access based on user role
+     * Superuser & Admin & Accountant - all buttons enabled
+     * Approver - only Approve, Generate Vouchers, Export Excel enabled
+     *            (Add, Edit, Delete, Update Payment are disabled)
+     */
+    private void configureRoleBasedAccess() {
+        String role = UserSession.getInstance().getRole();
+        if (role == null) {
+            return;
+        }
+        
+        String roleLower = role.toLowerCase().trim();
+        
+        if (roleLower.equals("superuser") || roleLower.equals("admin") || roleLower.equals("accountant")) {
+            // Superuser, Admin, Accountant - all buttons enabled
+            addRequestButton.setDisable(false);
+            editRequestButton.setDisable(false);
+            deleteRequestButton.setDisable(false);
+            updatePaymentButton.setDisable(false);
+            approveButton.setDisable(false);
+            generateVouchersButton.setDisable(false);
+            exportExcelButton.setDisable(false);
+        } else if (roleLower.equals("approver")) {
+            // Approver - only approval and related actions enabled (cannot update payment)
+            addRequestButton.setDisable(true);
+            editRequestButton.setDisable(true);
+            deleteRequestButton.setDisable(true);
+            updatePaymentButton.setDisable(true);
+            approveButton.setDisable(false);
+            generateVouchersButton.setDisable(false);
+            exportExcelButton.setDisable(false);
+        } else {
+            // Unknown role - disable all
+            addRequestButton.setDisable(true);
+            editRequestButton.setDisable(true);
+            deleteRequestButton.setDisable(true);
+            updatePaymentButton.setDisable(true);
+            approveButton.setDisable(true);
+            generateVouchersButton.setDisable(true);
+            exportExcelButton.setDisable(true);
+        }
     }
 
     private void loadClients() {
@@ -236,12 +284,12 @@ public class RequestsController implements Initializable {
             String paymentFilterValue = paymentFilter.getValue();
             String searchText = searchField.getText().toLowerCase();
 
-            if (statusFilterValue != null && !statusFilterValue.equals("All") && 
+            if (statusFilterValue != null && !statusFilterValue.equals("All") &&
                 !request.getStatus().equals(statusFilterValue)) {
                 return false;
             }
 
-            if (paymentFilterValue != null && !paymentFilterValue.equals("All") && 
+            if (paymentFilterValue != null && !paymentFilterValue.equals("All") &&
                 !request.getPaymentStatus().equals(paymentFilterValue)) {
                 return false;
             }

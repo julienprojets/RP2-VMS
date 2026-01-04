@@ -32,7 +32,7 @@ public class SidebarController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // No default highlight since Dashboard is now just a label
+        // Initialization
     }
 
     // Sidebar button handlers =========================
@@ -155,7 +155,7 @@ public class SidebarController implements Initializable {
      * Configures access control for sidebar buttons based on user role
      * Superuser - access all buttons (all enabled)
      * Admin & Accountant - only Requests and Clients enabled (others disabled/greyed)
-     * Approver - only Vouchers and Reports enabled (others disabled/greyed)
+     * Approver - Vouchers, Reports, and Requests enabled (others disabled/greyed)
      */
     public void configureRoleBasedAccess(String role) {
         if (role == null) {
@@ -181,8 +181,8 @@ public class SidebarController implements Initializable {
             setButtonEnabled(usersButton, false);
             setButtonEnabled(reportsButton, false);
         } else if (roleLower.equals("approver")) {
-            // Approver - only Vouchers and Reports enabled
-            setButtonEnabled(requestsButton, false);
+            // Approver - Vouchers, Reports, and Requests enabled
+            setButtonEnabled(requestsButton, true);
             setButtonEnabled(clientsButton, false);
             setButtonEnabled(vouchersButton, true);
             setButtonEnabled(branchesButton, false);

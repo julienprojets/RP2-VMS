@@ -88,25 +88,25 @@
                         <RowConstraints minHeight="22" prefHeight="22"/>
                     </rowConstraints>
 
-                    <Label text="Client ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detIdLabel" text="Client ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="details-label"/>
                     <Label fx:id="detId" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="details-value"/>
 
-                    <Label text="Client Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detNameLabel" text="Client Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="details-label"/>
                     <Label fx:id="detName" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="details-value"/>
 
-                    <Label text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detEmailLabel" text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="details-label"/>
                     <Label fx:id="detEmail" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="details-value"/>
 
-                    <Label text="Address:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detAddressLabel" text="Address:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="details-label"/>
                     <Label fx:id="detAddress" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="details-value"/>
 
-                    <Label text="Phone:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detPhoneLabel" text="Phone:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="details-label"/>
                     <Label fx:id="detPhone" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="details-value"/>
 
-                    <Label text="Total Requests:" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detRequestsLabel" text="Total Requests:" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="details-label"/>
                     <Label fx:id="detRequests" GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="details-value"/>
 
-                    <Label text="Active Vouchers:" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detVouchersLabel" text="Active Vouchers:" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="details-label"/>
                     <Label fx:id="detVouchers" GridPane.rowIndex="6" GridPane.columnIndex="1" styleClass="details-value"/>
                 </GridPane>
 
