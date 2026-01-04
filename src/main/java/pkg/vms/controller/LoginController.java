@@ -69,13 +69,25 @@ public class LoginController {
         try {
             Connection conn = DBconnection.getConnection();
 
-            String checkUserQuery = "SELECT password, role FROM users WHERE username = ?";
+            String checkUserQuery = "SELECT password, role, status FROM users WHERE username = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkUserQuery);
             checkStmt.setString(1, username);
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
                 String storedPassword = rs.getString("password");
+                String userStatus = rs.getString("status");
+
+                // Check if account is inactive or suspended
+                if (userStatus != null && (userStatus.equalsIgnoreCase("Inactive") || userStatus.equalsIgnoreCase("Suspended"))) {
+                    String statusMessage = userStatus.equalsIgnoreCase("Inactive") 
+                        ? "Your account is inactive. Please contact an administrator." 
+                        : "Your account has been suspended. Please contact an administrator.";
+                    showError("Account Disabled", statusMessage);
+                    passwordField.clear();
+                    usernameField.requestFocus();
+                    return;
+                }
 
                 if (storedPassword.equals(password)) {
                     // ========== LOGIN SUCCESS → LOAD DASHBOARD ==========

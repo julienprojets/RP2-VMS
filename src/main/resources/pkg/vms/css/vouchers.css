@@ -135,24 +135,29 @@
    ACTION BUTTONS
    ---------------------------- */
 .action-button {
-    -fx-background-color: #003049;
+    -fx-background-color: #669bbc;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
     -fx-padding: 10 20;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+    -fx-text-alignment: center;
+    -fx-content-display: CENTER;
+    -fx-min-width: -1;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
 }
 
 .action-button:hover {
-    -fx-background-color: #004d73;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
+    -fx-background-color: #5a8ba8;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
 }
 
 .action-button:pressed {
-    -fx-background-color: #002837;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
+    -fx-background-color: #4d7a94;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
 }
 
 .delete-button {
@@ -164,37 +169,47 @@
     -fx-padding: 10 20;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.3), 8, 0, 0, 2);
+    -fx-text-alignment: center;
+    -fx-content-display: CENTER;
+    -fx-min-width: -1;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
 }
 
 .delete-button:hover {
-    -fx-background-color: #a0101a;
+    -fx-background-color: #a00e1a;
     -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.4), 12, 0, 0, 3);
 }
 
 .delete-button:pressed {
-    -fx-background-color: #8e0e17;
+    -fx-background-color: #8a0c15;
     -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.2), 4, 0, 0, 1);
 }
 
 .export-button {
-    -fx-background-color: #003049;
+    -fx-background-color: #669bbc;
     -fx-text-fill: white;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
     -fx-padding: 10 20;
     -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+    -fx-text-alignment: center;
+    -fx-content-display: CENTER;
+    -fx-min-width: -1;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
 }
 
 .export-button:hover {
-    -fx-background-color: #004d73;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
+    -fx-background-color: #5a8ba8;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
 }
 
 .export-button:pressed {
-    -fx-background-color: #002837;
-    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
+    -fx-background-color: #4d7a94;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
 }
 
 /* ----------------------------
@@ -243,11 +258,68 @@
 .form-scroll-pane {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-fit-to-width: true;
+    -fx-max-width: 700;
+    -fx-pref-width: 700;
+    -fx-pref-height: 400;
+    -fx-max-height: 450;
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: as-needed;
+}
+
+.form-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.form-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 5;
+    -fx-pref-width: 12;
+    -fx-min-width: 12;
+    -fx-max-width: 12;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #669bbc;
+    -fx-background-radius: 5;
+    -fx-min-width: 8;
+    -fx-pref-width: 8;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a8ba8;
+}
+
+.form-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 5;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-button,
+.form-scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-arrow,
+.form-scroll-pane .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: #669bbc;
+    -fx-shape: "";
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-arrow:hover,
+.form-scroll-pane .scroll-bar:vertical .decrement-arrow:hover {
+    -fx-background-color: #5a8ba8;
 }
 
 .form-content {
-    -fx-padding: 25;
-    -fx-spacing: 20;
+    -fx-padding: 30;
+    -fx-spacing: 25;
 }
 
 .form-label {
@@ -264,6 +336,8 @@
     -fx-padding: 12 16;
     -fx-font-size: 14px;
     -fx-pref-height: 44;
+    -fx-min-width: 200;
+    -fx-pref-width: -1;
 }
 
 .form-text-field:focused, .form-date-picker:focused, .form-combo-box:focused {

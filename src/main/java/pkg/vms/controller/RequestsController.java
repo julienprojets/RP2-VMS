@@ -43,6 +43,7 @@ public class RequestsController implements Initializable {
     @FXML private TableColumn<VoucherRequest, Double> totalValueColumn;
     @FXML private TableColumn<VoucherRequest, String> statusColumn;
     @FXML private TableColumn<VoucherRequest, String> paymentStatusColumn;
+    @FXML private TableColumn<VoucherRequest, java.sql.Date> expirationDateColumn;
 
     // Search and filter
     @FXML private TextField searchField;
@@ -55,6 +56,7 @@ public class RequestsController implements Initializable {
     @FXML private Button deleteRequestButton;
     @FXML private Button updatePaymentButton;
     @FXML private Button approveButton;
+    @FXML private Button rejectButton;
     @FXML private Button generateVouchersButton;
     @FXML private Button exportExcelButton;
 
@@ -94,6 +96,20 @@ public class RequestsController implements Initializable {
         totalValueColumn.setCellValueFactory(new PropertyValueFactory<>("totalValue"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         paymentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("paymentStatus"));
+        expirationDateColumn.setCellValueFactory(new PropertyValueFactory<>("expirationDate"));
+        
+        // Format expiration date column
+        expirationDateColumn.setCellFactory(column -> new javafx.scene.control.TableCell<VoucherRequest, java.sql.Date>() {
+            @Override
+            protected void updateItem(java.sql.Date date, boolean empty) {
+                super.updateItem(date, empty);
+                if (empty || date == null) {
+                    setText(null);
+                } else {
+                    setText(date.toString());
+                }
+            }
+        });
 
         // Setup filters - initialize with empty list, will be updated when data loads
         filteredRequests = new FilteredList<>(requestList);
@@ -161,6 +177,7 @@ public class RequestsController implements Initializable {
             deleteRequestButton.setDisable(false);
             updatePaymentButton.setDisable(false);
             approveButton.setDisable(false);
+            rejectButton.setDisable(false);
             generateVouchersButton.setDisable(false);
             exportExcelButton.setDisable(false);
         } else if (roleLower.equals("approver")) {
@@ -170,6 +187,7 @@ public class RequestsController implements Initializable {
             deleteRequestButton.setDisable(true);
             updatePaymentButton.setDisable(true);
             approveButton.setDisable(false);
+            rejectButton.setDisable(false);
             generateVouchersButton.setDisable(false);
             exportExcelButton.setDisable(false);
         } else {
@@ -179,6 +197,7 @@ public class RequestsController implements Initializable {
             deleteRequestButton.setDisable(true);
             updatePaymentButton.setDisable(true);
             approveButton.setDisable(true);
+            rejectButton.setDisable(true);
             generateVouchersButton.setDisable(true);
             exportExcelButton.setDisable(true);
         }
@@ -243,7 +262,7 @@ public class RequestsController implements Initializable {
         requestList.clear();
         try (Connection conn = DBconnection.getConnection();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT * FROM voucher_requests WHERE status != 'Redeemed' OR status IS NULL ORDER BY request_id DESC")) {
+             ResultSet rs = stmt.executeQuery("SELECT * FROM voucher_requests WHERE status IS NULL OR (status != 'Redeemed' AND status != 'rejected') ORDER BY request_id DESC")) {
             while (rs.next()) {
                 VoucherRequest req = new VoucherRequest();
                 req.setRequestId(rs.getInt("request_id"));
@@ -263,6 +282,22 @@ public class RequestsController implements Initializable {
                 }
                 req.setApprovedBy(rs.getString("approved_by"));
                 req.setProcessedBy(rs.getString("processed_by"));
+                
+                // Get expiration date from vouchers associated with this request
+                String requestRef = req.getRequestReference();
+                try (PreparedStatement expiryStmt = conn.prepareStatement(
+                    "SELECT MIN(expiry_date) as min_expiry FROM vouchers WHERE request_reference = ?")) {
+                    expiryStmt.setString(1, requestRef);
+                    try (ResultSet expiryRs = expiryStmt.executeQuery()) {
+                        if (expiryRs.next() && expiryRs.getDate("min_expiry") != null) {
+                            req.setExpirationDate(expiryRs.getDate("min_expiry"));
+                        }
+                    }
+                } catch (SQLException e) {
+                    // If no vouchers found or error, expiration date remains null
+                    System.out.println("Note: Could not get expiration date for request " + requestRef + ": " + e.getMessage());
+                }
+                
                 requestList.add(req);
             }
             // Update UI on JavaFX thread
@@ -419,10 +454,29 @@ public class RequestsController implements Initializable {
                     voucherCodes = voucherCodes.subList(0, numVouchers);
                 }
                 
-                // Use the first voucher code as the request reference
-                requestReference = voucherCodes.get(0);
+                // Find a voucher code that is not already used as a request reference
+                requestReference = null;
+                for (String voucherCode : voucherCodes) {
+                    // Check if this voucher code is already used as a request reference
+                    String checkSql = "SELECT COUNT(*) FROM voucher_requests WHERE request_reference = ?";
+                    try (PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
+                        checkPs.setString(1, voucherCode);
+                        try (ResultSet checkRs = checkPs.executeQuery()) {
+                            if (checkRs.next() && checkRs.getInt(1) == 0) {
+                                // This voucher code is not used as a request reference, use it
+                                requestReference = voucherCode;
+                                break;
+                            }
+                        }
+                    }
+                }
                 
-                // Create the request with the voucher code as reference
+                // If no unique voucher code found, generate a unique request reference
+                if (requestReference == null) {
+                    requestReference = generateRequestReference(conn);
+                }
+                
+                // Create the request with the unique reference
                 String sql = "INSERT INTO voucher_requests(request_reference, ref_client, client_name, " +
                            "num_vouchers, unit_value, total_value, status, payment_status, processed_by, " +
                            "created_at, updated_at) VALUES(?, ?, ?, ?, ?, ?, 'initiated', 'unpaid', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
@@ -732,6 +786,97 @@ public class RequestsController implements Initializable {
                 } catch (SQLException e) {
                     e.printStackTrace();
                     showError("Error approving request: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    @FXML
+    private void handleReject() {
+        VoucherRequest selected = requestsTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Please select a request to reject.");
+            return;
+        }
+
+        // Check if request is already rejected or completed
+        if ("rejected".equals(selected.getStatus()) || "completed".equals(selected.getStatus())) {
+            showError("This request is already " + selected.getStatus() + ".");
+            return;
+        }
+
+        // Prevent rejection if payment status is paid
+        if ("paid".equals(selected.getPaymentStatus())) {
+            showError("Cannot reject a request with paid payment status. Please process the payment refund first.");
+            return;
+        }
+
+        // Check if rejection is due to expiration date or payment status
+        java.sql.Date expirationDate = selected.getExpirationDate();
+        boolean isExpired = false;
+        if (expirationDate != null) {
+            java.sql.Date today = new java.sql.Date(System.currentTimeMillis());
+            isExpired = expirationDate.before(today) || expirationDate.equals(today);
+        }
+        boolean isUnpaid = "unpaid".equals(selected.getPaymentStatus());
+
+        // Make reason effectively final for use in lambda
+        final String reason = isExpired ? "expiration date" : (isUnpaid ? "payment status" : "");
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Reject Request");
+        confirm.setHeaderText("Reject Voucher Request");
+        String confirmText = "Are you sure you want to reject request " + selected.getRequestReference() + "?";
+        if (!reason.isEmpty()) {
+            confirmText += "\n\nReason: " + reason;
+        }
+        confirmText += "\n\nVouchers associated with this request will be returned to the pool.";
+        confirm.setContentText(confirmText);
+        
+        confirm.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try (Connection conn = DBconnection.getConnection()) {
+                    // Return vouchers to the pool (not mark as expired)
+                    releaseVouchersFromRequest(conn, selected.getRequestReference());
+                    
+                    // Update request status to rejected
+                    String sql = "UPDATE voucher_requests SET status='rejected', approved_by=?, " +
+                               "approval_date=CURRENT_TIMESTAMP, updated_at=CURRENT_TIMESTAMP WHERE request_id=?";
+                    
+                    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                        ps.setString(1, UserSession.getInstance().getUsername());
+                        ps.setInt(2, selected.getRequestId());
+                        ps.executeUpdate();
+                    }
+
+                    AuditLogger.logAction("REJECT", "VOUCHER_REQUEST", selected.getRequestReference(),
+                        UserSession.getInstance().getUsername(), "Rejected voucher request" + 
+                        (!reason.isEmpty() ? " (reason: " + reason + ")" : ""), null, null, "Request rejection");
+
+                    // Send email notification to client about rejection
+                    String clientEmail = getClientEmail(selected.getRefClient());
+                    if (clientEmail != null && !clientEmail.isEmpty()) {
+                        String subject = "Voucher Request Rejected - " + selected.getRequestReference();
+                        String body = String.format(
+                            "Dear %s,\n\n" +
+                            "We regret to inform you that your voucher request %s has been rejected." +
+                            (!reason.isEmpty() ? "\n\nReason: " + reason : "") +
+                            "\n\nNumber of vouchers: %d\n" +
+                            "Unit value: Rs %.2f\n" +
+                            "Total value: Rs %.2f\n\n" +
+                            "If you have any questions, please contact us.\n\n" +
+                            "VMS Team",
+                            selected.getClientName(), selected.getRequestReference(),
+                            selected.getNumVouchers(), selected.getUnitValue(), selected.getTotalValue()
+                        );
+                        EmailService.sendEmail(clientEmail, null, subject, body, null);
+                    }
+
+                    showSuccess("Request rejected successfully. Associated vouchers have been returned to the pool.");
+                    loadRequests();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    showError("Error rejecting request: " + e.getMessage());
                 }
             }
         });
@@ -1375,11 +1520,11 @@ public class RequestsController implements Initializable {
         if (file != null) {
             try (FileWriter writer = new FileWriter(file)) {
                 // Write header
-                writer.append("Request Reference,Client Name,Quantity,Unit Value,Total Value,Status,Payment Status,Payment Date,Approval Date\n");
+                writer.append("Request Reference,Client Name,Quantity,Unit Value,Total Value,Status,Payment Status,Payment Date,Approval Date,Expiration Date\n");
 
                 // Write data
                 for (VoucherRequest req : filteredRequests) {
-                    writer.append(String.format("\"%s\",\"%s\",%d,%.2f,%.2f,\"%s\",\"%s\",%s,%s\n",
+                    writer.append(String.format("\"%s\",\"%s\",%d,%.2f,%.2f,\"%s\",\"%s\",%s,%s,%s\n",
                         req.getRequestReference(),
                         req.getClientName(),
                         req.getNumVouchers(),
@@ -1388,7 +1533,8 @@ public class RequestsController implements Initializable {
                         req.getStatus(),
                         req.getPaymentStatus(),
                         req.getPaymentDate() != null ? req.getPaymentDate().toString() : "",
-                        req.getApprovalDate() != null ? req.getApprovalDate().toString() : ""
+                        req.getApprovalDate() != null ? req.getApprovalDate().toString() : "",
+                        req.getExpirationDate() != null ? req.getExpirationDate().toString() : ""
                     ));
                 }
 

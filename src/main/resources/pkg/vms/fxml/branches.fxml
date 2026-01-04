@@ -124,7 +124,7 @@
             <!-- ADD / EDIT BRANCH FORM (initially hidden) -->
             <VBox fx:id="addForm" spacing="0" visible="false" managed="false"
                   styleClass="branch-form"
-                  maxWidth="650">
+                  maxWidth="700">
                 <!-- FORM HEADER -->
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
                     <Label fx:id="formTitle"
@@ -142,19 +142,19 @@
                            styleClass="form-scroll-pane"
                            prefHeight="350"
                            maxHeight="400">
-                    <VBox spacing="10" styleClass="form-content">
-                        <GridPane hgap="15" vgap="10">
+                    <VBox spacing="20" styleClass="form-content">
+                        <GridPane hgap="20" vgap="20">
                             <columnConstraints>
-                                <ColumnConstraints minWidth="130" prefWidth="130"/>
-                                <ColumnConstraints minWidth="250" prefWidth="250" hgrow="ALWAYS"/>
+                                <ColumnConstraints minWidth="160" prefWidth="160"/>
+                                <ColumnConstraints minWidth="350" prefWidth="350" hgrow="ALWAYS"/>
                             </columnConstraints>
 
                             <rowConstraints>
-                                <RowConstraints minHeight="32" prefHeight="32"/>
-                                <RowConstraints minHeight="32" prefHeight="32"/>
-                                <RowConstraints minHeight="32" prefHeight="32"/>
-                                <RowConstraints minHeight="32" prefHeight="32"/>
-                                <RowConstraints minHeight="32" prefHeight="32"/>
+                                <RowConstraints minHeight="44" prefHeight="44"/>
+                                <RowConstraints minHeight="44" prefHeight="44"/>
+                                <RowConstraints minHeight="44" prefHeight="44"/>
+                                <RowConstraints minHeight="44" prefHeight="44"/>
+                                <RowConstraints minHeight="44" prefHeight="44"/>
                             </rowConstraints>
 
                             <Label text="Company:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="details-label"/>

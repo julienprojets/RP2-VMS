@@ -37,9 +37,13 @@ A comprehensive JavaFX-based desktop application for managing vouchers, clients,
 4. **Request Management**
    - Create voucher requests for clients
    - Request workflow: Draft → Paid → Approved → Generated → Dispatched
+   - **Reject functionality**: Reject requests for all roles (returns vouchers to pool)
+   - **Expiration date tracking**: View voucher expiration dates in request table
    - Automatic voucher generation from approved requests
    - PDF summary generation for requests
    - Email notifications for voucher dispatch
+   - Payment status management (unpaid/paid)
+   - Rejected requests are automatically removed from the management table
 
 5. **Branch Management**
    - Manage company branches
@@ -50,6 +54,7 @@ A comprehensive JavaFX-based desktop application for managing vouchers, clients,
    - Comprehensive voucher statistics
    - Status distribution charts (Pie Chart)
    - Redemptions over time (Bar Chart)
+   - **Expired vouchers tracking**: View expired vouchers in metrics and graphs
    - Filterable reports by status, date range, and search terms
    - Excel/CSV export functionality
 
@@ -68,6 +73,10 @@ A comprehensive JavaFX-based desktop application for managing vouchers, clients,
 - **Database Auto-Schema**: Automatic database schema creation and updates
 - **Performance Optimized**: Background threading for data loading to prevent UI freezing
 - **Role-Based Access**: Different access levels for different user roles
+  - **Superuser/Admin/Accountant**: Full access to all features
+  - **Approver**: Can approve, reject, generate vouchers, and export (cannot add/edit/delete requests or update payment)
+- **Request Rejection**: Reject requests with automatic voucher pool return
+- **Expiration Date Tracking**: Monitor voucher expiration dates in request management
 - **Audit Logging**: Tracks system activities and changes
 
 ## Technologies Used
@@ -220,13 +229,20 @@ java --module-path /path/to/javafx/lib --add-modules javafx.controls,javafx.fxml
 ### Creating Requests
 
 1. Navigate to **Requests** from the sidebar
-2. Click **New Request** button
-3. Select a client and fill in request details
-4. Specify number of vouchers and value
-5. Save as Draft, mark as Paid, then Approve
-6. Once approved, click **Generate Vouchers** to create vouchers
-7. Click **Generate Summary PDF** to create a summary document
-8. Use **Email Vouchers** to send PDFs via email (if configured)
+2. Click **+ Add Request** button
+3. Select a client and fill in request details:
+   - Number of vouchers
+   - Unit value per voucher
+   - Total value is calculated automatically
+4. The request is created with status "initiated" and payment status "unpaid"
+5. **Update Payment**: Mark the request as "paid" when payment is received
+6. **Approve**: Once paid, approve the request (available to all roles)
+7. **Reject**: Reject requests based on expiration date or payment status (available to all roles)
+   - Rejected requests return vouchers to the pool (not marked as expired)
+   - Rejected requests are removed from the management table
+8. **Generate Vouchers**: Once approved, generate vouchers for the request
+9. Vouchers are automatically dispatched via email (if configured)
+10. **Expiration Date**: View expiration dates in the request table (derived from associated vouchers)
 
 ### Redeeming Vouchers (Mobile)
 
@@ -403,6 +419,16 @@ For issues or questions:
 
 ---
 
-**Version**: 1.0  
-**Last Updated**: December 2025
+**Version**: 1.1  
+**Last Updated**: January 2026
+
+### Recent Updates (v1.1)
+
+- **Reject Button**: Added reject functionality for all roles in Voucher Requests Management
+- **Expiration Date Column**: Added expiration date display in Voucher Requests Management table
+- **Rejection Workflow**: Rejected requests return vouchers to pool (not marked as expired)
+- **UI Improvements**: Enhanced form spacing, button styling, and scrollbar consistency
+- **Form Height**: Increased form heights for better content visibility
+- **Button Truncation Fix**: All buttons now display full text without truncation
+- **Consistent Theming**: Unified button colors and scrollbar styling across all forms
 

@@ -62,7 +62,7 @@
             <!-- ADD / EDIT USER FORM -->
             <VBox fx:id="addForm" spacing="0" visible="false" managed="false"
                   styleClass="user-form"
-                  maxWidth="600">
+                  maxWidth="700">
                 <!-- FORM HEADER WITH CLOSE BUTTON -->
                 <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
                     <Label fx:id="formTitle"
@@ -87,11 +87,11 @@
                            styleClass="form-scroll-pane"
                            prefHeight="350"
                            maxHeight="400">
-                    <VBox spacing="15" styleClass="form-content">
-                        <GridPane hgap="15" vgap="15">
+                    <VBox spacing="20" styleClass="form-content">
+                        <GridPane hgap="20" vgap="20">
                             <columnConstraints>
-                                <ColumnConstraints minWidth="150" prefWidth="150"/>
-                                <ColumnConstraints minWidth="250" prefWidth="250" hgrow="ALWAYS"/>
+                                <ColumnConstraints minWidth="160" prefWidth="160"/>
+                                <ColumnConstraints minWidth="350" prefWidth="350" hgrow="ALWAYS"/>
                             </columnConstraints>
                             
                             <!-- Username -->

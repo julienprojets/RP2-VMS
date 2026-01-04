@@ -23,6 +23,7 @@ public class VoucherRequest {
     private final StringProperty processedBy;
     private final ObjectProperty<Timestamp> createdAt;
     private final ObjectProperty<Timestamp> updatedAt;
+    private final ObjectProperty<java.sql.Date> expirationDate;
     
     public VoucherRequest() {
         this.requestId = new SimpleIntegerProperty();
@@ -40,6 +41,7 @@ public class VoucherRequest {
         this.processedBy = new SimpleStringProperty();
         this.createdAt = new SimpleObjectProperty<>();
         this.updatedAt = new SimpleObjectProperty<>();
+        this.expirationDate = new SimpleObjectProperty<>();
     }
     
     // Getters and Setters
@@ -102,5 +104,9 @@ public class VoucherRequest {
     public Timestamp getUpdatedAt() { return updatedAt.get(); }
     public void setUpdatedAt(Timestamp value) { updatedAt.set(value); }
     public ObjectProperty<Timestamp> updatedAtProperty() { return updatedAt; }
+    
+    public java.sql.Date getExpirationDate() { return expirationDate.get(); }
+    public void setExpirationDate(java.sql.Date value) { expirationDate.set(value); }
+    public ObjectProperty<java.sql.Date> expirationDateProperty() { return expirationDate; }
 }
 

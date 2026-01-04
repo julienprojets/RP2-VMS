@@ -165,6 +165,11 @@
     -fx-padding: 10 20;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+    -fx-text-alignment: center;
+    -fx-content-display: CENTER;
+    -fx-min-width: -1;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
 }
 
 .action-button:hover {
@@ -187,6 +192,11 @@
     -fx-padding: 10 20;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.3), 8, 0, 0, 2);
+    -fx-text-alignment: center;
+    -fx-content-display: CENTER;
+    -fx-min-width: -1;
+    -fx-pref-width: -1;
+    -fx-max-width: -1;
 }
 
 .delete-button:hover {
@@ -289,8 +299,8 @@
 
 /* Form Content */
 .form-content {
-    -fx-padding: 25;
-    -fx-spacing: 20;
+    -fx-padding: 30;
+    -fx-spacing: 25;
 }
 
 .form-label {
@@ -307,6 +317,8 @@
     -fx-padding: 12 16;
     -fx-font-size: 14px;
     -fx-pref-height: 44;
+    -fx-min-width: 200;
+    -fx-pref-width: -1;
 }
 
 .form-text-field:focused, .form-password-field:focused, .form-combo-box:focused {
@@ -405,10 +417,12 @@
     -fx-border-color: transparent;
     -fx-padding: 0;
     -fx-fit-to-width: true;
-    -fx-max-width: 600;
-    -fx-pref-width: 600;
-    -fx-pref-height: 350;
-    -fx-max-height: 400;
+    -fx-max-width: 700;
+    -fx-pref-width: 700;
+    -fx-pref-height: 500;
+    -fx-max-height: 550;
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: as-needed;
 }
 
 .form-scroll-pane .viewport {
@@ -418,14 +432,45 @@
 .form-scroll-pane .scroll-bar:vertical {
     -fx-background-color: #f0f0f0;
     -fx-background-radius: 5;
+    -fx-pref-width: 12;
+    -fx-min-width: 12;
+    -fx-max-width: 12;
 }
 
 .form-scroll-pane .scroll-bar:vertical .thumb {
     -fx-background-color: #669bbc;
     -fx-background-radius: 5;
+    -fx-min-width: 8;
+    -fx-pref-width: 8;
 }
 
 .form-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a8ba8;
+}
+
+.form-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 5;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-button,
+.form-scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-arrow,
+.form-scroll-pane .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: #669bbc;
+    -fx-shape: "";
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-arrow:hover,
+.form-scroll-pane .scroll-bar:vertical .decrement-arrow:hover {
     -fx-background-color: #5a8ba8;
 }
 
