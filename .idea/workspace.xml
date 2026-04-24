@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="cafa2886-80f8-4773-90ae-fa4578f50a23" name="Changes" comment="Modified HelloAPP, vouchers.fxml, vouchersController.java, created vouchers.css">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dbtablecreate.php" beforeDir="false" afterPath="$PROJECT_DIR$/dbtablecreate.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/email_config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/email_config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pkg/vms/HelloApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pkg/vms/HelloApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pkg/vms/controller/RequestsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pkg/vms/controller/RequestsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pkg/vms/util/DatabaseSchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pkg/vms/util/DatabaseSchema.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pkg/vms/util/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pkg/vms/util/EmailService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pkg/vms/util/PDFGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pkg/vms/util/PDFGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pkg/vms/util/RedemptionServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pkg/vms/util/RedemptionServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/pkg/vms/css/dashboard.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/pkg/vms/css/dashboard.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/pkg/vms/fxml/Dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/pkg/vms/fxml/Dashboard.fxml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Vouchers" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;julienprojets&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/julienprojets/vms.git&quot;,
+    &quot;accountId&quot;: &quot;6baa13da-da55-48f9-a3b1-b871351f1606&quot;
+  }
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="36ZJ8KTlx98efI43JDQWqwfM7Uh" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.HelloApplication.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/USER/IdeaProjects/VMS-FINALE- BACKUP",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.runner",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="VMS-FINALE - test" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="VMS-FINALE - test" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.21565.193" />
+        <option value="bundled-js-predefined-d6986cc7102b-e768b9ed790e-JavaScript-IU-243.21565.193" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cafa2886-80f8-4773-90ae-fa4578f50a23" name="Changes" comment="" />
+      <created>1765208000123</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1765208000123</updated>
+      <workItem from="1765208001441" duration="227000" />
+      <workItem from="1765208309080" duration="3306000" />
+      <workItem from="1765269930408" duration="1084000" />
+      <workItem from="1765294853196" duration="2847000" />
+      <workItem from="1765374682321" duration="7934000" />
+      <workItem from="1765386896778" duration="1956000" />
+      <workItem from="1765455919074" duration="4057000" />
+      <workItem from="1765623076276" duration="3913000" />
+      <workItem from="1765631136013" duration="1397000" />
+      <workItem from="1765706603123" duration="3013000" />
+      <workItem from="1765726522581" duration="2363000" />
+      <workItem from="1766209986399" duration="292000" />
+      <workItem from="1766571844480" duration="1043000" />
+      <workItem from="1767284586824" duration="231000" />
+      <workItem from="1767518326092" duration="4528000" />
+      <workItem from="1767531576223" duration="3146000" />
+      <workItem from="1767691762286" duration="2524000" />
+      <workItem from="1768367466168" duration="1229000" />
+      <workItem from="1773682532641" duration="940000" />
+      <workItem from="1773729635028" duration="1538000" />
+      <workItem from="1773808909514" duration="1962000" />
+      <workItem from="1774159479177" duration="543000" />
+      <workItem from="1774172090944" duration="3221000" />
+      <workItem from="1774198287204" duration="101000" />
+      <workItem from="1774788671631" duration="549000" />
+      <workItem from="1774790389128" duration="2686000" />
+      <workItem from="1774845033833" duration="2197000" />
+      <workItem from="1774855201313" duration="2544000" />
+      <workItem from="1775728778924" duration="1441000" />
+      <workItem from="1776661853205" duration="3100000" />
+      <workItem from="1776699306437" duration="3637000" />
+      <workItem from="1777039976093" duration="1011000" />
+    </task>
+    <task id="LOCAL-00001" summary="Modified HelloAPP, vouchers.fxml, vouchersController.java, created vouchers.css">
+      <option name="closed" value="true" />
+      <created>1765387529612</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1765387529613</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Modified HelloAPP, vouchers.fxml, vouchersController.java, created vouchers.css" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified HelloAPP, vouchers.fxml, vouchersController.java, created vouchers.css" />
+  </component>
+</project>

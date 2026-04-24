@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pkg.vms.controller.ClientsController"
+            stylesheets="@../css/clients.css">
+
+    <!-- HEADER -->
+    <top>
+        <HBox spacing="15" styleClass="clients-header" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Label text="Clients Management"
+                   styleClass="header-title-label"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <TextField fx:id="searchHeaderField"
+                       promptText="Search client..."
+                       prefWidth="250"
+                       styleClass="search-field"/>
+
+            <Button text="Search" onAction="#handleSearch" styleClass="search-button"/>
+        </HBox>
+    </top>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="20" styleClass="content-container">
+
+            <!-- TableView -->
+            <VBox styleClass="clients-table">
+                <TableView fx:id="clientsTable" prefHeight="250">
+                    <columns>
+                        <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="colName" text="Name" prefWidth="150"/>
+                        <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+                        <TableColumn fx:id="colPhone" text="Phone" prefWidth="120"/>
+                        <TableColumn fx:id="colAddress" text="Address" prefWidth="200"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Action buttons under table -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="0" right="0" bottom="0" left="5"/>
+                </padding>
+
+                <Button text="+ Add New Client" onAction="#handleAdd" styleClass="action-button"/>
+                <Button text="View Details" onAction="#handleViewDetails" styleClass="action-button"/>
+                <Button text="Edit" onAction="#handleEdit" styleClass="action-button"/>
+                <Button text="Delete" onAction="#handleDelete" styleClass="action-button"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Export Excel" onAction="#handleExportExcel" styleClass="export-button"/>
+            </HBox>
+
+            <Separator styleClass="separator"/>
+
+            <!-- Client Details Panel -->
+            <VBox fx:id="detailsPane"
+                  spacing="10"
+                  visible="false"
+                  managed="false"
+                  styleClass="client-details-panel">
+                <Label fx:id="detailsTitle"
+                       styleClass="details-title"/>
+
+                <!-- Info grid -->
+                <GridPane hgap="15" vgap="8">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="100" prefWidth="100" halignment="LEFT"/>
+                        <ColumnConstraints hgrow="ALWAYS" halignment="LEFT"/>
+                    </columnConstraints>
+
+                    <rowConstraints>
+                        <RowConstraints minHeight="22" prefHeight="22"/>
+                        <RowConstraints minHeight="22" prefHeight="22"/>
+                        <RowConstraints minHeight="22" prefHeight="22"/>
+                        <RowConstraints minHeight="22" prefHeight="22"/>
+                        <RowConstraints minHeight="22" prefHeight="22"/>
+                        <RowConstraints minHeight="22" prefHeight="22"/>
+                        <RowConstraints minHeight="22" prefHeight="22"/>
+                    </rowConstraints>
+
+                    <Label fx:id="detIdLabel" text="Client ID:" GridPane.rowIndex="0" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detId" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="details-value"/>
+
+                    <Label fx:id="detNameLabel" text="Client Name:" GridPane.rowIndex="1" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detName" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="details-value"/>
+
+                    <Label fx:id="detEmailLabel" text="Email:" GridPane.rowIndex="2" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detEmail" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="details-value"/>
+
+                    <Label fx:id="detAddressLabel" text="Address:" GridPane.rowIndex="3" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detAddress" GridPane.rowIndex="3" GridPane.columnIndex="1" styleClass="details-value"/>
+
+                    <Label fx:id="detPhoneLabel" text="Phone:" GridPane.rowIndex="4" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detPhone" GridPane.rowIndex="4" GridPane.columnIndex="1" styleClass="details-value"/>
+
+                    <Label fx:id="detRequestsLabel" text="Total Requests:" GridPane.rowIndex="5" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detRequests" GridPane.rowIndex="5" GridPane.columnIndex="1" styleClass="details-value"/>
+
+                    <Label fx:id="detVouchersLabel" text="Active Vouchers:" GridPane.rowIndex="6" GridPane.columnIndex="0" styleClass="details-label"/>
+                    <Label fx:id="detVouchers" GridPane.rowIndex="6" GridPane.columnIndex="1" styleClass="details-value"/>
+                </GridPane>
+
+                <!-- Bottom action bar -->
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets top="8" right="0" bottom="0" left="0"/>
+                    </padding>
+
+                    <Button text="View Requests" styleClass="details-button"/>
+                    <Button text="View Vouchers" styleClass="details-button"/>
+                    <Button text="Update Info" styleClass="details-button"/>
+                </HBox>
+
+            </VBox>
+
+            <!-- ADD / EDIT CLIENT FORM (initially hidden) -->
+            <VBox fx:id="addForm"
+                  spacing="10"
+                  visible="false"
+                  managed="false"
+                  styleClass="client-form">
+
+                <Label fx:id="formTitle"
+                       text="Add New Client"
+                       styleClass="form-title"/>
+
+                <TextField fx:id="addName" promptText="Client Name" styleClass="form-text-field"/>
+                <TextField fx:id="addEmail" promptText="Email" styleClass="form-text-field"/>
+                <TextField fx:id="addAddress" promptText="Address" styleClass="form-text-field"/>
+                <TextField fx:id="addPhone" promptText="Phone" styleClass="form-text-field"/>
+
+                <Label fx:id="addError" styleClass="form-error"/>
+
+                <HBox spacing="8">
+                    <Button fx:id="formSaveButton" text="Save" onAction="#handleFormSave" styleClass="form-save-button"/>
+                    <Button text="Cancel" onAction="#handleAddCancel" styleClass="form-cancel-button"/>
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

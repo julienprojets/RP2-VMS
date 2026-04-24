@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pkg.vms.controller.UsersController"
+            stylesheets="@../css/users.css">
+    <!-- HEADER -->
+    <top>
+        <HBox spacing="15" styleClass="users-header" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+            <Label text="Users Management"
+                   styleClass="header-title-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="searchHeaderField"
+                       promptText="Search user..."
+                       prefWidth="250"
+                       styleClass="search-field"/>
+            <Button text="Search" onAction="#handleSearch" styleClass="search-button"/>
+        </HBox>
+    </top>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="20" styleClass="content-container">
+            <!-- TOP ACTION BAR -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="addUserButton" text="+ Add New User" onAction="#handleAddUser" styleClass="add-user-button"/>
+            </HBox>
+            <Separator styleClass="separator"/>
+
+            <!-- USERS TABLE -->
+            <VBox styleClass="users-table">
+                <TableView fx:id="usersTable" prefHeight="300">
+                    <columns>
+                        <TableColumn fx:id="usernameColumn" text="Username" prefWidth="120"/>
+                        <TableColumn fx:id="firstNameColumn" text="First Name" prefWidth="120"/>
+                        <TableColumn fx:id="lastNameColumn" text="Last Name" prefWidth="120"/>
+                        <TableColumn fx:id="emailColumn" text="Email" prefWidth="180"/>
+                        <TableColumn fx:id="roleColumn" text="Role" prefWidth="100"/>
+                        <TableColumn fx:id="companyColumn" text="Company" prefWidth="150"/>
+                        <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                        <TableColumn fx:id="titreColumn" text="Titre" prefWidth="150"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- TABLE ACTION BUTTONS -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <padding>
+                    <Insets top="5" right="0" bottom="5" left="0"/>
+                </padding>
+                <Button text="Edit" onAction="#handleEditUser" styleClass="action-button"/>
+                <Button fx:id="deleteButton" text="Delete" onAction="#handleDeleteUser" styleClass="action-button"/>
+            </HBox>
+            <Separator styleClass="separator"/>
+
+            <!-- ADD / EDIT USER FORM -->
+            <VBox fx:id="addForm" spacing="0" visible="false" managed="false"
+                  styleClass="user-form"
+                  maxWidth="700">
+                <!-- FORM HEADER WITH CLOSE BUTTON -->
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
+                    <Label fx:id="formTitle"
+                           text="Add/Edit User"
+                           styleClass="form-title"
+                           HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="closeFormButton" text="✕" 
+                            styleClass="close-form-button"
+                            onAction="#handleAddCancel">
+                        <tooltip>
+                            <Tooltip text="Close"/>
+                        </tooltip>
+                    </Button>
+                </HBox>
+                
+                <!-- SCROLLABLE FORM CONTENT -->
+                <ScrollPane fx:id="addFormScrollPane"
+                           fitToWidth="true" 
+                           pannable="true"
+                           vbarPolicy="AS_NEEDED"
+                           hbarPolicy="NEVER"
+                           styleClass="form-scroll-pane"
+                           prefHeight="350"
+                           maxHeight="400">
+                    <VBox spacing="20" styleClass="form-content">
+                        <GridPane hgap="20" vgap="20">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="160" prefWidth="160"/>
+                                <ColumnConstraints minWidth="350" prefWidth="350" hgrow="ALWAYS"/>
+                            </columnConstraints>
+                            
+                            <!-- Username -->
+                            <Label text="Username:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="addUsername" promptText="Enter username" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+                            
+                            <!-- First Name -->
+                            <Label text="First Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="addFirstName" promptText="Enter first name" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                            
+                            <!-- Last Name -->
+                            <Label text="Last Name:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="addLastName" promptText="Enter last name" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                            
+                            <!-- Email -->
+                            <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="addEmail" promptText="Enter email" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                            
+                            <!-- Role -->
+                            <Label text="Role:" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <ComboBox fx:id="addRoleCombo" promptText="Select role" 
+                                     styleClass="form-combo-box"
+                                     GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                            
+                            <!-- Status -->
+                            <Label text="Status:" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <ComboBox fx:id="addStatusCombo" promptText="Select status" 
+                                     styleClass="form-combo-box"
+                                     GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                            
+                            <!-- Password -->
+                            <Label text="Password:" GridPane.rowIndex="6" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <PasswordField fx:id="addPassword" promptText="Enter password" 
+                                          styleClass="form-password-field"
+                                          GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                            
+                            <!-- DDL -->
+                            <Label text="DDL:" GridPane.rowIndex="7" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="addDdl" promptText="Enter DDL" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+                            
+                            <!-- Titre -->
+                            <Label text="Titre:" GridPane.rowIndex="8" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <TextField fx:id="addTitre" promptText="Enter titre" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+                            
+                            <!-- Company -->
+                            <Label text="Company:" GridPane.rowIndex="9" GridPane.columnIndex="0"
+                                   styleClass="form-label"/>
+                            <ComboBox fx:id="addCompanyCombo" promptText="Select company" 
+                                     styleClass="form-combo-box"
+                                     GridPane.rowIndex="9" GridPane.columnIndex="1"/>
+                        </GridPane>
+                        
+                        <!-- Error Message -->
+                        <Label fx:id="formError" styleClass="form-error"/>
+                        
+                        <!-- Action Buttons -->
+                        <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding:10 0 0 0;">
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="Cancel" onAction="#handleAddCancel" styleClass="form-cancel-button"/>
+                            <Button text="Save" onAction="#handleFormSave" styleClass="form-save-button"/>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

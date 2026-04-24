@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pkg.vms.controller.RequestsController"
+            stylesheets="@../css/users.css">
+
+    <!-- HEADER -->
+    <top>
+        <VBox spacing="10" styleClass="users-header">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label text="Voucher Requests Management"
+                       styleClass="header-title-label"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <TextField fx:id="searchField"
+                           promptText="Search by reference or client..."
+                           prefWidth="250"
+                           styleClass="search-field"/>
+
+                <Button text="Search"
+                        onAction="#handleSearch"
+                        styleClass="search-button"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Region HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="statusFilter" 
+                         promptText="Status"
+                         prefWidth="120"
+                         styleClass="form-combo-box"/>
+
+                <ComboBox fx:id="paymentFilter"
+                         promptText="Payment"
+                         prefWidth="100"
+                         styleClass="form-combo-box"/>
+                
+                <Button text="⚙ Email Config" onAction="#handleEmailConfig" 
+                       styleClass="action-button" 
+                       style="-fx-font-size: 12px; -fx-padding: 8 16;">
+                    <tooltip>
+                        <Tooltip text="Configure Email Settings"/>
+                    </tooltip>
+                </Button>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <VBox spacing="20" styleClass="content-container">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Table -->
+            <VBox styleClass="users-table">
+                <TableView fx:id="requestsTable" prefHeight="400">
+                    <columns>
+                        <TableColumn fx:id="referenceColumn" text="Request Reference" prefWidth="150"/>
+                        <TableColumn fx:id="clientColumn" text="Client Name" prefWidth="200"/>
+                        <TableColumn fx:id="quantityColumn" text="Quantity" prefWidth="100"/>
+                        <TableColumn fx:id="unitValueColumn" text="Unit Value (Rs)" prefWidth="120"/>
+                        <TableColumn fx:id="totalValueColumn" text="Total Value (Rs)" prefWidth="130"/>
+                        <TableColumn fx:id="statusColumn" text="Status" prefWidth="120"/>
+                        <TableColumn fx:id="paymentStatusColumn" text="Payment Status" prefWidth="130"/>
+                        <TableColumn fx:id="expirationDateColumn" text="Expiration Date" prefWidth="130"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <FlowPane hgap="10" vgap="10" alignment="CENTER_LEFT">
+                <Button fx:id="addRequestButton" text="+ Add Request" 
+                       onAction="#handleAddRequest" styleClass="action-button"/>
+                <Button fx:id="editRequestButton" text="Edit" 
+                       onAction="#handleEditRequest" styleClass="action-button"/>
+                <Button fx:id="updatePaymentButton" text="Update Payment" 
+                       onAction="#handleUpdatePayment" styleClass="action-button"/>
+                <Button fx:id="approveButton" text="Approve" 
+                       onAction="#handleApprove" styleClass="action-button"/>
+                <Button fx:id="rejectButton" text="Reject" 
+                       onAction="#handleReject" styleClass="action-button"/>
+                <Button fx:id="generateVouchersButton" text="Generate Vouchers" 
+                       onAction="#handleGenerateVouchers" styleClass="action-button"/>
+                <Button fx:id="exportExcelButton" text="Export Excel" 
+                       onAction="#handleExportExcel" styleClass="action-button"/>
+                <Button fx:id="deleteRequestButton" text="Delete" 
+                       onAction="#handleDeleteRequest" styleClass="delete-button"/>
+            </FlowPane>
+
+            <Separator styleClass="separator"/>
+
+            <!-- ADD/EDIT REQUEST FORM -->
+            <VBox fx:id="addForm" spacing="15" visible="false" managed="false" 
+                  styleClass="user-form" maxWidth="700">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
+                    <Label fx:id="formTitle" text="Add/Edit Request" 
+                          styleClass="form-title" HBox.hgrow="ALWAYS"/>
+                    <Button text="✕" onAction="#handleFormCancel" 
+                           styleClass="close-form-button">
+                        <tooltip><Tooltip text="Close"/></tooltip>
+                    </Button>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+                           prefHeight="500" maxHeight="550" styleClass="form-scroll-pane">
+                    <VBox spacing="20" styleClass="form-content">
+                        <GridPane hgap="20" vgap="20">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="160" prefWidth="160"/>
+                                <ColumnConstraints minWidth="350" prefWidth="350" hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Label text="Client:" GridPane.rowIndex="0" GridPane.columnIndex="0" 
+                                  styleClass="form-label"/>
+                            <ComboBox fx:id="clientCombo" promptText="Select client" 
+                                     styleClass="form-combo-box"
+                                     GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                            <Label text="Number of Vouchers:" GridPane.rowIndex="1" 
+                                  GridPane.columnIndex="0" styleClass="form-label"/>
+                            <TextField fx:id="numVouchersField" promptText="Enter quantity" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                            <Label text="Unit Value (Rs):" GridPane.rowIndex="2" 
+                                  GridPane.columnIndex="0" styleClass="form-label"/>
+                            <TextField fx:id="unitValueField" promptText="Enter unit value" 
+                                      styleClass="form-text-field"
+                                      GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                            <Label fx:id="totalValueLabel" text="Total: Rs 0.00" 
+                                  GridPane.rowIndex="3" GridPane.columnIndex="1" 
+                                  styleClass="form-label" 
+                                  style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+                        </GridPane>
+
+                        <Label fx:id="formError" styleClass="form-error"/>
+
+                        <HBox spacing="10" alignment="CENTER_RIGHT">
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="formSaveButton" text="Save" 
+                                   onAction="#handleFormSave" styleClass="form-save-button"/>
+                            <Button fx:id="formCancelButton" text="Cancel" 
+                                   onAction="#handleFormCancel" styleClass="form-cancel-button"/>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+            <!-- PAYMENT UPDATE FORM -->
+            <VBox fx:id="paymentForm" spacing="0" visible="false" managed="false" 
+                  styleClass="user-form" maxWidth="500">
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="form-header">
+                    <Label text="Update Payment Status" 
+                          styleClass="form-title" HBox.hgrow="ALWAYS"/>
+                    <Button text="✕" onAction="#handlePaymentCancel" 
+                           styleClass="close-form-button">
+                        <tooltip><Tooltip text="Close"/></tooltip>
+                    </Button>
+                </HBox>
+
+                <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED" hbarPolicy="NEVER"
+                           prefHeight="400" maxHeight="450" styleClass="form-scroll-pane">
+                    <VBox spacing="15" styleClass="form-content">
+                        <Label fx:id="paymentRequestRef" text="Request:" 
+                              styleClass="form-label"/>
+                        
+                        <Label text="Payment Status:" styleClass="form-label"/>
+                        <ComboBox fx:id="paymentStatusCombo" promptText="Select status" 
+                                 styleClass="form-combo-box"/>
+
+                        <Label text="Approver Email:" styleClass="form-label"/>
+                        <TextField fx:id="approverEmailField" promptText="Enter approver email" 
+                                  styleClass="form-text-field"/>
+
+                        <Label fx:id="paymentError" styleClass="form-error"/>
+
+                        <HBox spacing="10" alignment="CENTER_RIGHT">
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="paymentSaveButton" text="Save" 
+                                   onAction="#handlePaymentSave" styleClass="form-save-button"/>
+                            <Button fx:id="paymentCancelButton" text="Cancel" 
+                                   onAction="#handlePaymentCancel" styleClass="form-cancel-button"/>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
+

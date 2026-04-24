@@ -1,0 +1,159 @@
+/* ============================================
+   DASHBOARD LAYOUT — STYLES SPECIFIC TO THIS PAGE
+   ============================================ */
+
+/* Root background matching login page */
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #dce6eb 100%);
+}
+
+/* ----------------------------
+   TOP HEADER BAR
+   ---------------------------- */
+.top-header {
+    -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #dce6eb 100%);
+    -fx-padding: 12 20;
+    -fx-border-color: #003049;
+    -fx-border-width: 0 0 2 0;
+    -fx-alignment: CENTER_LEFT;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+}
+
+.header-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+.header-userinfo {
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-font-weight: normal;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
+}
+
+/* ----------------------------
+   MAIN ICON GRID
+   ---------------------------- */
+.dashboard-icon-box {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-min-width: 180;
+    -fx-min-height: 180;
+    -fx-pref-width: 200;
+    -fx-pref-height: 200;
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+}
+
+.dashboard-icon-box .label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #003049;
+    -fx-font-weight: bold;
+}
+
+.dashboard-icon-box:hover {
+    -fx-opacity: 0.9;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 25, 0, 0, 6);
+    -fx-background-color: #f8f9fa;
+}
+
+/* OPTIONAL: card-style box if you want white background panels */
+.dashboard-card {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+}
+
+/* ----------------------------
+   UTILITY & LAYOUT ADJUSTMENTS
+   ---------------------------- */
+.center-grid {
+    -fx-hgap: 60;
+    -fx-vgap: 40;
+    -fx-alignment: TOP_CENTER;
+    -fx-padding: 20 0 0 0;
+}
+
+/* ensure labels inside dashboard follow global typography */
+.dashboard-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #003049;
+    -fx-font-weight: bold;
+}
+
+/* ----------------------------
+   DISABLED BUTTONS STYLING
+   ---------------------------- */
+.disabled-button {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+.disabled-button .label {
+    -fx-text-fill: #999999;
+}
+
+.dashboard-icon-box.disabled-button {
+    -fx-cursor: default;
+}
+
+.dashboard-icon-box.disabled-button:hover {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+    -fx-background-color: white;
+}
+
+.disabled-sidebar-button {
+    -fx-opacity: 0.5;
+    -fx-text-fill: #cccccc !important;
+    -fx-cursor: default;
+}
+
+.disabled-sidebar-button:hover {
+    -fx-background-color: transparent !important;
+}
+
+/* ----------------------------
+   LOGOUT BUTTON STYLING
+   ---------------------------- */
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 6 12;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
+}
+
+.logout-button .logout-icon {
+    -fx-fill: white;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.logout-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.3), 4, 0, 0, 1);
+}
+
+.logout-button:hover .logout-icon {
+    -fx-fill: #ffcccc;
+}
+
+.logout-button:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 2, 0, 0, 0);
+}
+
+.logout-button:pressed .logout-icon {
+    -fx-fill: #e6b3b3;
+}

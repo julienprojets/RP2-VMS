@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="maven-antrun-" default="main">
+  <target name="main">
+    <copy file="C:\Users\USER\IdeaProjects\VMS-FINALE - test\target/VMS-1.0-SNAPSHOT.jar" todir="C:\Users\USER\IdeaProjects\VMS-FINALE - test\target/jpackage-input" overwrite="true" />
+  </target>
+</project>

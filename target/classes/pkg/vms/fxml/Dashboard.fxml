@@ -1,0 +1,101 @@
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.SVGPath?>
+
+<AnchorPane stylesheets="@../css/dashboard.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="pkg.vms.controller.DashboardController">
+
+    <BorderPane fx:id="rootPane"
+                prefWidth="1200" prefHeight="720">
+
+        <!-- ============= TOP HEADER ============= -->
+        <top>
+            <HBox prefHeight="60" spacing="20" prefWidth="Infinity"
+                  styleClass="top-header"
+                  alignment="CENTER_LEFT"
+                  style="-fx-padding: 8 20;">
+
+                <Label text="Voucher Management System"
+                       styleClass="header-title"
+                       HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="usernameLabel" text="Logged in as: Bobby"
+                       styleClass="header-userinfo"/>
+
+                <Label fx:id="roleLabel" text="Role: Superuser"
+                       styleClass="header-userinfo"/>
+
+                <Button fx:id="logoutButton"
+                        styleClass="logout-button"
+                        onAction="#handleLogout">
+                    <graphic>
+                        <!-- Vector icon: avoids missing Unicode glyphs (tofu) on some Windows font setups -->
+                        <SVGPath styleClass="logout-icon"
+                                 content="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="Logout"/>
+                    </tooltip>
+                </Button>
+            </HBox>
+        </top>
+
+        <!-- ============= MAIN CONTENT AREA ============= -->
+        <center>
+            <GridPane fx:id="dashboardGrid" hgap="60" vgap="40" alignment="TOP_CENTER" styleClass="center-grid">
+                <columnConstraints>
+                    <ColumnConstraints percentWidth="33"/>
+                    <ColumnConstraints percentWidth="33"/>
+                    <ColumnConstraints percentWidth="33"/>
+                </columnConstraints>
+
+                <!-- Row 1 -->
+                <VBox fx:id="vboxRequests" alignment="CENTER" styleClass="dashboard-icon-box" 
+                      onMouseClicked="#handleRequestsClick" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <ImageView fx:id="iconRequests" fitWidth="120" fitHeight="120"/>
+                    <Label text="Voucher Requests" styleClass="dashboard-label"/>
+                </VBox>
+
+                <VBox fx:id="vboxClients" alignment="CENTER" styleClass="dashboard-icon-box"
+                      onMouseClicked="#handleClientsClick" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                    <ImageView fx:id="iconClients" fitWidth="120" fitHeight="120"/>
+                    <Label text="Clients" styleClass="dashboard-label"/>
+                </VBox>
+
+                <VBox fx:id="vboxVouchers" alignment="CENTER" styleClass="dashboard-icon-box"
+                      onMouseClicked="#handleVouchersClick" GridPane.rowIndex="0" GridPane.columnIndex="2">
+                    <ImageView fx:id="iconVouchers" fitWidth="120" fitHeight="120"/>
+                    <Label text="Vouchers" styleClass="dashboard-label"/>
+                </VBox>
+
+                <!-- Row 2 -->
+                <VBox fx:id="vboxBranches" alignment="CENTER" styleClass="dashboard-icon-box"
+                      onMouseClicked="#handleBranchesClick" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <ImageView fx:id="iconBranches" fitWidth="120" fitHeight="120"/>
+                    <Label text="Branches" styleClass="dashboard-label"/>
+                </VBox>
+
+                <VBox fx:id="vboxUsers" alignment="CENTER" styleClass="dashboard-icon-box"
+                      onMouseClicked="#handleUsersClick" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <ImageView fx:id="iconUsers" fitWidth="120" fitHeight="120"/>
+                    <Label text="Users" styleClass="dashboard-label"/>
+                </VBox>
+
+                <VBox fx:id="vboxReports" alignment="CENTER" styleClass="dashboard-icon-box"
+                      onMouseClicked="#handleReportsClick" GridPane.rowIndex="1" GridPane.columnIndex="2">
+                    <ImageView fx:id="iconReports" fitWidth="120" fitHeight="120"/>
+                    <Label text="Reports" styleClass="dashboard-label"/>
+                </VBox>
+
+            </GridPane>
+        </center>
+
+    </BorderPane>
+
+</AnchorPane>

@@ -1,0 +1,523 @@
+/* ============================================
+   BRANCHES MANAGEMENT PAGE STYLES
+   Matching Login/Dashboard Theme
+   ============================================ */
+
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #dce6eb 100%);
+}
+
+/* ----------------------------
+   HEADER BAR
+   ---------------------------- */
+.branches-header {
+    -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #dce6eb 100%);
+    -fx-padding: 15 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+}
+
+.header-title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0, 0, 1);
+}
+
+/* Search Field */
+.search-field {
+    -fx-background-color: white;
+    -fx-border-color: #669bbc;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 16;
+    -fx-font-size: 14px;
+    -fx-pref-height: 40;
+}
+
+.search-field:focused {
+    -fx-border-color: #003049;
+    -fx-border-width: 2;
+}
+
+.search-field:hover {
+    -fx-border-color: #669bbc;
+}
+
+/* Search Button */
+.search-button {
+    -fx-background-color: #003049;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 24;
+    -fx-pref-height: 40;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
+}
+
+.search-button:hover {
+    -fx-background-color: #004d73;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
+}
+
+.search-button:pressed {
+    -fx-background-color: #002837;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
+}
+
+/* Filter ComboBox */
+.filter-combo {
+    -fx-background-color: white;
+    -fx-border-color: #669bbc;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 12;
+    -fx-font-size: 14px;
+    -fx-pref-height: 40;
+}
+
+.filter-combo:focused {
+    -fx-border-color: #003049;
+    -fx-border-width: 2;
+}
+
+.filter-combo:hover {
+    -fx-border-color: #669bbc;
+}
+
+.combo-box .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #669bbc;
+    -fx-border-radius: 8;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #003049;
+    -fx-padding: 8;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+.combo-box .list-cell:selected {
+    -fx-background-color: #669bbc;
+    -fx-text-fill: white;
+}
+
+/* ----------------------------
+   MAIN CONTENT AREA
+   ---------------------------- */
+.content-container {
+    -fx-padding: 20;
+    -fx-spacing: 20;
+}
+
+/* Add Company Button */
+.add-company-button {
+    -fx-background-color: #003049;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 12 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
+}
+
+.add-company-button:hover {
+    -fx-background-color: #004d73;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
+}
+
+.add-company-button:pressed {
+    -fx-background-color: #002837;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
+}
+
+.delete-company-button {
+    -fx-background-color: #c1121f;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.3), 8, 0, 0, 2);
+}
+
+.delete-company-button:hover {
+    -fx-background-color: #a00e1a;
+    -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.4), 12, 0, 0, 3);
+}
+
+.delete-company-button:pressed {
+    -fx-background-color: #8a0c15;
+    -fx-effect: dropshadow(gaussian, rgba(193, 18, 31, 0.2), 4, 0, 0, 1);
+}
+
+/* ----------------------------
+   TABLE STYLING
+   ---------------------------- */
+.branches-table {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+    -fx-padding: 10;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #003049;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: #003049;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #669bbc;
+    -fx-text-background-color: white;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+.table-view .table-cell {
+    -fx-border-color: #dee2e6;
+    -fx-padding: 8;
+    -fx-text-fill: #003049;
+}
+
+/* ----------------------------
+   ACTION BUTTONS
+   ---------------------------- */
+.action-button {
+    -fx-background-color: #669bbc;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 8, 0, 0, 2);
+}
+
+.action-button:hover {
+    -fx-background-color: #5a8ba8;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 12, 0, 0, 3);
+}
+
+.action-button:pressed {
+    -fx-background-color: #4d7a94;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
+}
+
+.export-button {
+    -fx-background-color: #003049;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
+}
+
+.export-button:hover {
+    -fx-background-color: #004d73;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
+}
+
+.export-button:pressed {
+    -fx-background-color: #002837;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
+}
+
+/* ----------------------------
+   BRANCH DETAILS PANEL
+   ---------------------------- */
+.branch-details-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+    -fx-border-color: #003049;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+    -fx-padding: 15;
+    -fx-max-width: Infinity;
+}
+
+.details-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003049;
+    -fx-padding: 0 0 8 0;
+}
+
+.details-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003049;
+}
+
+.details-value {
+    -fx-font-size: 12px;
+    -fx-text-fill: #003049;
+}
+
+.details-button {
+    -fx-background-color: #669bbc;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.3), 6, 0, 0, 2);
+}
+
+.details-button:hover {
+    -fx-background-color: #5a8ba8;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.4), 8, 0, 0, 2);
+}
+
+.details-button:pressed {
+    -fx-background-color: #4d7a94;
+    -fx-effect: dropshadow(gaussian, rgba(102, 155, 188, 0.2), 4, 0, 0, 1);
+}
+
+/* ----------------------------
+   ADD/EDIT BRANCH FORM
+   ---------------------------- */
+.form-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-fit-to-width: true;
+    -fx-max-width: 700;
+    -fx-pref-width: 700;
+    -fx-pref-height: 400;
+    -fx-max-height: 450;
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: as-needed;
+}
+
+.form-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.form-scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 5;
+    -fx-pref-width: 12;
+    -fx-min-width: 12;
+    -fx-max-width: 12;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #669bbc;
+    -fx-background-radius: 5;
+    -fx-min-width: 8;
+    -fx-pref-width: 8;
+}
+
+.form-scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a8ba8;
+}
+
+.form-scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 5;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-button,
+.form-scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-arrow,
+.form-scroll-pane .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: #669bbc;
+    -fx-shape: "";
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.form-scroll-pane .scroll-bar:vertical .increment-arrow:hover,
+.form-scroll-pane .scroll-bar:vertical .decrement-arrow:hover {
+    -fx-background-color: #5a8ba8;
+}
+
+.branch-form {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+    -fx-border-color: #003049;
+    -fx-border-width: 2;
+    -fx-border-radius: 12;
+    -fx-min-width: 650;
+    -fx-pref-width: 650;
+    -fx-max-width: 650;
+}
+
+.form-header {
+    -fx-background-color: #003049;
+    -fx-background-radius: 10 10 0 0;
+    -fx-padding: 15 20;
+}
+
+.form-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.form-content {
+    -fx-padding: 30;
+    -fx-spacing: 25;
+}
+
+.form-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003049;
+}
+
+.form-text-field, .form-combo-box {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12 16;
+    -fx-font-size: 14px;
+    -fx-pref-height: 44;
+    -fx-min-height: 44;
+    -fx-min-width: 200;
+    -fx-pref-width: -1;
+}
+
+.form-combo-box .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #003049;
+    -fx-padding: 8;
+}
+
+.form-combo-box .list-cell:hover {
+    -fx-background-color: #e3f2fd;
+}
+
+.form-combo-box .list-cell:selected {
+    -fx-background-color: #669bbc;
+    -fx-text-fill: white;
+}
+
+.form-combo-box .arrow-button {
+    -fx-background-color: #669bbc;
+}
+
+.form-combo-box .arrow-button .arrow {
+    -fx-background-color: white;
+}
+
+.form-text-field:focused, .form-combo-box:focused {
+    -fx-background-color: white;
+    -fx-border-color: #003049;
+    -fx-border-width: 2;
+}
+
+.form-text-field:hover, .form-combo-box:hover {
+    -fx-border-color: #669bbc;
+}
+
+.form-text-field:disabled {
+    -fx-opacity: 0.7;
+    -fx-background-color: #e9ecef;
+}
+
+.form-error {
+    -fx-text-fill: #c1121f;
+    -fx-font-size: 10px;
+    -fx-wrap-text: true;
+}
+
+.form-save-button {
+    -fx-background-color: #003049;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-pref-height: 32;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 6, 0, 0, 2);
+}
+
+.form-save-button:hover {
+    -fx-background-color: #004d73;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 8, 0, 0, 2);
+}
+
+.form-save-button:pressed {
+    -fx-background-color: #002837;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
+}
+
+.form-cancel-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 12px;
+    -fx-background-radius: 6;
+    -fx-padding: 8 16;
+    -fx-pref-height: 32;
+    -fx-cursor: hand;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+}
+
+.form-cancel-button:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #adb5bd;
+    -fx-text-fill: #495057;
+}
+
+.form-cancel-button:pressed {
+    -fx-background-color: #e9ecef;
+}
+
+/* Separator */
+.separator {
+    -fx-background-color: #dee2e6;
+    -fx-pref-height: 1;
+}
+

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pkg.vms.controller.layout.SidebarController"
+            prefWidth="220"
+            stylesheets="@../../css/sidebar.css">
+
+
+    <VBox prefWidth="220" styleClass="sidebar" spacing="20" alignment="TOP_CENTER">
+
+        <!-- Top space -->
+        <Label text="" prefHeight="20"/>
+
+        <!-- Dashboard Title - Clickable -->
+        <Label fx:id="dashboardLabel"
+               text="Dashboard"
+               styleClass="sidebar-title"
+               onMouseClicked="#onDashboard"/>
+
+        <!-- Sidebar Items -->
+        <VBox spacing="8">
+            <Button fx:id="requestsButton"   text="📋 Requests"  styleClass="sidebar-button" onAction="#onRequests"/>
+            <Button fx:id="clientsButton"    text="👥 Clients"   styleClass="sidebar-button" onAction="#onClients"/>
+            <Button fx:id="vouchersButton"   text="🎫 Vouchers"  styleClass="sidebar-button" onAction="#onVouchers"/>
+            <Button fx:id="branchesButton"   text="🏢 Branches"  styleClass="sidebar-button" onAction="#onBranches"/>
+            <Button fx:id="usersButton"      text="👤 Users"     styleClass="sidebar-button" onAction="#onUsers"/>
+            <Button fx:id="reportsButton"    text="📊 Reports"   styleClass="sidebar-button" onAction="#onReports"/>
+        </VBox>
+
+        <!-- Push items up -->
+        <Pane VBox.vgrow="ALWAYS"/>
+
+    </VBox>
+
+</AnchorPane>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voucher Redemption</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #003049 0%, #669bbc 50%, #dce6eb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 { color: #003049; text-align: center; margin-bottom: 10px; font-size: 28px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 14px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: #003049; font-weight: bold; margin-bottom: 8px; font-size: 14px; }
+        input, select {
+            width: 100%; padding: 12px; border: 2px solid #669bbc; border-radius: 8px;
+            font-size: 16px; transition: border-color 0.3s;
+        }
+        input:focus, select:focus { outline: none; border-color: #003049; }
+        .btn {
+            width: 100%; padding: 14px; background: #003049; color: white; border: none;
+            border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer;
+            transition: background 0.3s; margin-top: 10px;
+        }
+        .btn:hover { background: #004d73; }
+        .btn:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-check { background: #669bbc; }
+        .btn-check:hover { background: #5a8ba8; }
+        .message {
+            padding: 12px; border-radius: 8px; margin-top: 15px; text-align: center;
+            font-weight: bold; display: none;
+        }
+        .message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        .message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        .voucher-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px; display: none; }
+        .voucher-info.show { display: block; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .info-label { font-weight: bold; color: #003049; }
+        .info-value { color: #666; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🎫 Voucher Redemption</h1>
+    <p class="subtitle">Scan QR code or enter voucher code manually</p>
+
+    <form id="redemptionForm">
+        <div class="form-group">
+            <label for="voucherCode">Voucher Code *</label>
+            <input type="text" id="voucherCode" name="voucherCode"
+                   placeholder="Enter voucher code manually or scan QR code" required autofocus>
+            <div style="margin-top: 10px; text-align: center;">
+                <button type="button" class="btn btn-check" onclick="toggleScanner()"
+                        id="scanBtn" style="width: auto; padding: 12px 30px;">
+                    📷 Scan QR Code with Camera
+                </button>
+            </div>
+        </div>
+
+        <div id="scannerContainer" style="display: none; margin-bottom: 20px;">
+            <video id="scannerVideo" style="width: 100%; max-width: 400px; border-radius: 8px; background: #000;"></video>
+            <canvas id="scannerCanvas" style="display: none;"></canvas>
+            <div style="text-align: center; margin-top: 10px;">
+                <button type="button" class="btn btn-check" onclick="stopScanner()" style="background: #dc3545;">
+                    Stop Scanning
+                </button>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-check" onclick="checkVoucher()">Check Voucher</button>
+
+        <div id="voucherInfo" class="voucher-info">
+            <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value" id="voucherStatus">-</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Value:</span>
+                <span class="info-value" id="voucherValue">-</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="branch">Company *</label>
+            <input type="text" id="branch" name="branch" placeholder="Enter company name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="redeemedBy">Redeemed By *</label>
+            <input type="text" id="redeemedBy" name="redeemedBy" placeholder="Enter your name" required>
+        </div>
+
+        <button type="submit" class="btn" id="redeemBtn">Redeem Voucher</button>
+    </form>
+
+    <div id="message" class="message"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+    const API_BASE_URL = "__API_BASE_URL__";
+    const form = document.getElementById("redemptionForm");
+    const messageDiv = document.getElementById("message");
+    const voucherInfo = document.getElementById("voucherInfo");
+    let scannerStream = null;
+    let scanning = false;
+
+    function apiUrl(path) {
+        if (!API_BASE_URL) return path;
+        return API_BASE_URL.endsWith("/") ? API_BASE_URL.slice(0, -1) + path : API_BASE_URL + path;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    if (code) {
+        document.getElementById("voucherCode").value = code;
+        checkVoucher();
+    }
+
+    async function toggleScanner() { scanning ? stopScanner() : startScanner(); }
+
+    async function startScanner() {
+        const scannerContainer = document.getElementById("scannerContainer");
+        const scannerVideo = document.getElementById("scannerVideo");
+        const scanBtn = document.getElementById("scanBtn");
+        try {
+            scannerStream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } }
+            });
+            scannerVideo.srcObject = scannerStream;
+            scannerVideo.setAttribute("playsinline", "true");
+            await scannerVideo.play();
+            scannerContainer.style.display = "block";
+            scanBtn.textContent = "📷 Scanning...";
+            scanning = true;
+            scanQRCode();
+        } catch (error) {
+            showMessage("Unable to access camera. Please allow camera permissions and try again.", "error");
+        }
+    }
+
+    function stopScanner() {
+        scanning = false;
+        if (scannerStream) {
+            scannerStream.getTracks().forEach(track => track.stop());
+            scannerStream = null;
+        }
+        document.getElementById("scannerVideo").srcObject = null;
+        document.getElementById("scannerContainer").style.display = "none";
+        document.getElementById("scanBtn").textContent = "📷 Scan QR Code with Camera";
+    }
+
+    function scanQRCode() {
+        const scannerVideo = document.getElementById("scannerVideo");
+        const scannerCanvas = document.getElementById("scannerCanvas");
+        const context = scannerCanvas.getContext("2d");
+        if (!scanning || !scannerVideo.readyState || scannerVideo.readyState !== scannerVideo.HAVE_ENOUGH_DATA) {
+            if (scanning) requestAnimationFrame(scanQRCode);
+            return;
+        }
+        scannerCanvas.width = scannerVideo.videoWidth;
+        scannerCanvas.height = scannerVideo.videoHeight;
+        context.drawImage(scannerVideo, 0, 0, scannerCanvas.width, scannerCanvas.height);
+        const imageData = context.getImageData(0, 0, scannerCanvas.width, scannerCanvas.height);
+        if (typeof jsQR !== "undefined") {
+            const scanned = jsQR(imageData.data, imageData.width, imageData.height);
+            if (scanned) {
+                const voucherCode = extractVoucherCodeFromURL(scanned.data) || scanned.data;
+                document.getElementById("voucherCode").value = voucherCode;
+                stopScanner();
+                checkVoucher();
+                showMessage("QR code scanned successfully!", "success");
+                return;
+            }
+        }
+        if (scanning) requestAnimationFrame(scanQRCode);
+    }
+
+    function extractVoucherCodeFromURL(url) {
+        try {
+            const urlObj = new URL(url);
+            const code = urlObj.searchParams.get("code");
+            if (code) return code;
+            const pathParts = urlObj.pathname.split("/");
+            const lastPart = pathParts[pathParts.length - 1];
+            if (lastPart && lastPart.match(/^[A-Z0-9-]+$/)) return lastPart;
+        } catch (e) {
+            const match = url.match(/[?&]code=([A-Z0-9-]+)/i);
+            if (match) return match[1];
+            const codeMatch = url.match(/(VCHR|VR)[0-9-]+/i);
+            if (codeMatch) return codeMatch[0];
+        }
+        return null;
+    }
+
+    async function checkVoucher() {
+        const voucherCode = document.getElementById("voucherCode").value.trim();
+        if (!voucherCode) return showMessage("Please enter a voucher code", "error");
+        try {
+            const response = await fetch(apiUrl("/check?code=" + encodeURIComponent(voucherCode)));
+            const data = await response.json();
+            if (data.success) {
+                document.getElementById("voucherStatus").textContent = data.status || "Active";
+                document.getElementById("voucherValue").textContent = data.value ? "Rs " + Number(data.value).toFixed(2) : "-";
+                voucherInfo.classList.add("show");
+                if (data.redeemed) {
+                    showMessage("This voucher has already been redeemed", "error");
+                    document.getElementById("redeemBtn").disabled = true;
+                } else {
+                    showMessage("Voucher is valid and ready for redemption", "success");
+                    document.getElementById("redeemBtn").disabled = false;
+                }
+            } else {
+                showMessage(data.message || "Voucher not found", "error");
+                voucherInfo.classList.remove("show");
+                document.getElementById("redeemBtn").disabled = true;
+            }
+        } catch (error) {
+            showMessage("Error checking voucher: " + error.message, "error");
+        }
+    }
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const voucherCode = document.getElementById("voucherCode").value.trim();
+        const branch = document.getElementById("branch").value.trim();
+        const redeemedBy = document.getElementById("redeemedBy").value.trim();
+        if (!voucherCode || !branch || !redeemedBy) return showMessage("Please fill in all fields", "error");
+        const redeemBtn = document.getElementById("redeemBtn");
+        redeemBtn.disabled = true;
+        redeemBtn.textContent = "Processing...";
+        try {
+            const response = await fetch(apiUrl("/redeem"), {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ voucherCode, branch, redeemedBy })
+            });
+            const data = await response.json();
+            if (data.success) {
+                showMessage(data.message, "success");
+                form.reset();
+                voucherInfo.classList.remove("show");
+            } else {
+                showMessage(data.message, "error");
+            }
+        } catch (error) {
+            showMessage("Error redeeming voucher: " + error.message, "error");
+        } finally {
+            redeemBtn.disabled = false;
+            redeemBtn.textContent = "Redeem Voucher";
+        }
+    });
+
+    function showMessage(text, type) {
+        messageDiv.textContent = text;
+        messageDiv.className = "message " + type;
+        setTimeout(() => { messageDiv.className = "message"; }, 5000);
+    }
+</script>
+</body>
+</html>

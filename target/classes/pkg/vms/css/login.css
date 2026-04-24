@@ -1,0 +1,149 @@
+/* ===============================
+   LOGIN PAGE STYLES
+   =============================== */
+
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #003049 0%, #669bbc 50%, #fdf0d5 100%);
+}
+
+/* Login Card Container */
+.login-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 0, 4);
+    -fx-padding: 40;
+}
+
+/* Title Section */
+.login-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003049;
+    -fx-alignment: center;
+}
+
+.login-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #669bbc;
+    -fx-alignment: center;
+}
+
+/* Logo/Icon Container */
+.logo-container {
+    -fx-background-color: #003049;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-alignment: center;
+}
+
+.logo-icon {
+    -fx-font-size: 48px;
+    -fx-text-fill: white;
+}
+
+/* Input Fields */
+.login-text-field, .login-password-field {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 12 16;
+    -fx-font-size: 14px;
+    -fx-pref-height: 44;
+}
+
+.login-text-field:focused, .login-password-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #003049;
+    -fx-border-width: 2;
+}
+
+.login-text-field:hover, .login-password-field:hover {
+    -fx-border-color: #669bbc;
+}
+
+/* Input Icons */
+.input-icon {
+    -fx-font-size: 20px;
+    -fx-text-fill: #669bbc;
+    -fx-padding: 0 12 0 0;
+}
+
+/* Buttons */
+.login-button {
+    -fx-background-color: #003049;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 14 32;
+    -fx-pref-height: 48;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.3), 8, 0, 0, 2);
+}
+
+.login-button:hover {
+    -fx-background-color: #004d73;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.4), 12, 0, 0, 3);
+}
+
+.login-button:pressed {
+    -fx-background-color: #002837;
+    -fx-effect: dropshadow(gaussian, rgba(0, 48, 73, 0.2), 4, 0, 0, 1);
+}
+
+.cancel-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-padding: 12 24;
+    -fx-pref-height: 44;
+    -fx-cursor: hand;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+.cancel-button:hover {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #adb5bd;
+    -fx-text-fill: #495057;
+}
+
+.cancel-button:pressed {
+    -fx-background-color: #e9ecef;
+}
+
+/* Error Message */
+.error-label {
+    -fx-text-fill: #c1121f;
+    -fx-font-size: 12px;
+    -fx-alignment: center-left;
+    -fx-padding: 4 0 0 0;
+}
+
+/* Input Container */
+.input-container {
+    -fx-spacing: 8;
+}
+
+/* Button Container */
+.button-container {
+    -fx-spacing: 12;
+    -fx-padding: 8 0 0 0;
+}
+
+/* Separator */
+.separator-line {
+    -fx-background-color: #dee2e6;
+    -fx-pref-height: 1;
+}
+
+/* Loading/Processing State */
+.login-button:disabled {
+    -fx-background-color: #adb5bd;
+    -fx-opacity: 0.6;
+    -fx-cursor: default;
+}
+

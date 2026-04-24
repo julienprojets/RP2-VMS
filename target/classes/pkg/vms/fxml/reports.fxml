@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pkg.vms.controller.ReportsController"
+            stylesheets="@../css/reports.css">
+
+    <!-- HEADER -->
+    <top>
+        <HBox spacing="15" styleClass="reports-header" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
+
+            <Label text="Reports &amp; Analytics"
+                   styleClass="header-title-label"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="📊 Export Excel"
+                    fx:id="exportExcelButton"
+                    onAction="#handleExportExcel"
+                    styleClass="export-button"/>
+        </HBox>
+    </top>
+
+    <!-- MAIN CONTENT -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <VBox spacing="20" styleClass="content-container">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+
+                <!-- STATISTICS CARDS -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <VBox styleClass="stat-card" spacing="5">
+                        <Label text="Total Vouchers" styleClass="stat-label"/>
+                        <Label fx:id="totalVouchersLabel" text="0" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="5">
+                        <Label text="Redeemed" styleClass="stat-label"/>
+                        <Label fx:id="redeemedLabel" text="0" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="5">
+                        <Label text="Active" styleClass="stat-label"/>
+                        <Label fx:id="activeLabel" text="0" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="5">
+                        <Label text="Expired" styleClass="stat-label"/>
+                        <Label fx:id="expiredLabel" text="0" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox styleClass="stat-card" spacing="5" prefWidth="220" minWidth="220">
+                        <Label text="Total Value" styleClass="stat-label"/>
+                        <Label fx:id="totalValueLabel" text="Rs 0.00" styleClass="stat-value" wrapText="true"/>
+                    </VBox>
+                </HBox>
+
+                <!-- FILTERS AND SEARCH -->
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="filter-container">
+                    <Label text="Filter:" styleClass="filter-label"/>
+                    <ComboBox fx:id="filterStatusCombo" 
+                             promptText="All Status"
+                             styleClass="filter-combo-box"
+                             onAction="#handleFilterChange"/>
+                    <TextField fx:id="searchField"
+                             promptText="Search voucher code or client..."
+                             styleClass="search-field"
+                             prefWidth="300"
+                             onKeyReleased="#handleSearch"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <DatePicker fx:id="startDatePicker"
+                              promptText="Start Date"
+                              styleClass="date-picker"
+                              onAction="#handleDateFilter"/>
+                    <DatePicker fx:id="endDatePicker"
+                              promptText="End Date"
+                              styleClass="date-picker"
+                              onAction="#handleDateFilter"/>
+                </HBox>
+
+                <!-- REPORTS TABLE -->
+                <VBox styleClass="reports-table" VBox.vgrow="ALWAYS">
+                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10;">
+                        <Label text="Redeemed Vouchers Report" styleClass="table-title-label"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    <TableView fx:id="reportsTable" prefHeight="350">
+                        <columns>
+                            <TableColumn fx:id="voucherCodeColumn" text="Voucher Code" prefWidth="150"/>
+                            <TableColumn fx:id="requestRefColumn" text="Request Ref" prefWidth="120"/>
+                            <TableColumn fx:id="clientColumn" text="Client" prefWidth="150"/>
+                            <TableColumn fx:id="valueColumn" text="Value (Rs)" prefWidth="100"/>
+                            <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                            <TableColumn fx:id="initDateColumn" text="Init Date" prefWidth="120"/>
+                            <TableColumn fx:id="expiryDateColumn" text="Expiry Date" prefWidth="120"/>
+                            <TableColumn fx:id="dateRedeemedColumn" text="Date Redeemed" prefWidth="150"/>
+                            <TableColumn fx:id="redeemedByColumn" text="Redeemed By" prefWidth="120"/>
+                            <TableColumn fx:id="redeemedBranchColumn" text="Branch" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- GRAPH SECTION -->
+                <VBox styleClass="graph-container" spacing="15">
+                    <Label text="Statistics Overview" styleClass="table-title-label"/>
+                    <HBox spacing="20" alignment="CENTER_LEFT">
+                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                            <Label text="Voucher Status Distribution" styleClass="chart-title"/>
+                            <PieChart fx:id="statusPieChart" prefHeight="300" prefWidth="400"/>
+                        </VBox>
+                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                            <Label text="Redemptions Over Time" styleClass="chart-title"/>
+                            <BarChart fx:id="redemptionBarChart" prefHeight="300" prefWidth="550">
+                                <xAxis>
+                                    <CategoryAxis fx:id="dateAxis" label="Date"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis fx:id="countAxis" label="No of Redemptions"/>
+                                </yAxis>
+                            </BarChart>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
+
