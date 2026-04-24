@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -912,7 +914,7 @@ public class RequestsController implements Initializable {
             // Ensure database schema is up to date before generating vouchers
             DatabaseSchema.ensureSchemaExists();
             
-            String outputDir = System.getProperty("user.dir") + "/vouchers/" + request.getRequestReference();
+            String outputDir = getVoucherOutputDir(request.getRequestReference());
             List<String> pdfPaths = new ArrayList<>();
             String clientEmail = getClientEmail(request.getRefClient());
             String clientName = request.getClientName();
@@ -1020,6 +1022,24 @@ public class RequestsController implements Initializable {
             e.printStackTrace();
             showError("Error generating vouchers: " + e.getMessage());
         }
+    }
+
+    /**
+     * Build a writable output directory for generated PDFs.
+     * Installed apps often run from Program Files, which is not writable by standard users.
+     */
+    private String getVoucherOutputDir(String requestReference) throws IOException {
+        String localAppData = System.getenv("LOCALAPPDATA");
+        Path baseDir;
+        if (localAppData != null && !localAppData.isBlank()) {
+            baseDir = Path.of(localAppData, "VMS", "vouchers");
+        } else {
+            baseDir = Path.of(System.getProperty("user.home"), "VMS", "vouchers");
+        }
+
+        Path outputDir = baseDir.resolve(requestReference);
+        Files.createDirectories(outputDir);
+        return outputDir.toString();
     }
 
     private void saveVoucherToDatabase(VoucherRequest request, String voucherCode, String pdfPath) 

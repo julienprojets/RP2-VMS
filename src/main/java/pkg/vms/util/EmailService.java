@@ -67,6 +67,13 @@ public class EmailService {
             props.put("mail.smtp.port", getSmtpPort());
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
+            // Require STARTTLS and explicitly trust the configured host so that
+            // corporate proxies/antivirus that re-sign certificates do not
+            // trigger PKIX path errors.
+            props.put("mail.smtp.starttls.required", "true");
+            props.put("mail.smtp.ssl.trust", getSmtpHost());
+            // Force modern TLS to avoid servers negotiating legacy protocols.
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2 TLSv1.3");
             
             Session session = Session.getInstance(props, new Authenticator() {
                 @Override

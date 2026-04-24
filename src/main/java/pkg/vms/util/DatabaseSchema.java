@@ -36,9 +36,11 @@ public class DatabaseSchema {
                     ensureVoucherStoresTable(conn);
                     // ensureRedemptionsTable(conn); // Removed - redemption functionality not used
                     ensureAuditTrailTable(conn);
+                    ensureRedemptionAuditTable(conn);
                     ensureVouchersTable(conn); // Ensure vouchers table exists first
                     updateVouchersTable(conn); // Then update/add columns
                     updateRequestsTable(conn);
+                    ensureRequestsTrigger(conn);
                     System.out.println("Database schema verified/updated successfully.");
                     schemaChecked = true;
                 }
@@ -229,6 +231,61 @@ public class DatabaseSchema {
             }
         }
     }
+
+    /**
+     * Audit log for voucher redemptions (successful + unsuccessful attempts).
+     * Insertion is done by {@link pkg.vms.util.RedemptionServer} and normalized by a trigger.
+     */
+    private static void ensureRedemptionAuditTable(Connection conn) throws Exception {
+        if (!tableExists(conn, "redemption_audit")) {
+            try (Statement stmt = conn.createStatement()) {
+                String sql = """
+                    CREATE TABLE redemption_audit (
+                        redemption_id SERIAL PRIMARY KEY,
+                        redemption_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                        status VARCHAR(20) NOT NULL,
+                        branch VARCHAR(255) NOT NULL,
+                        voucher_code VARCHAR(100),
+                        redeemed_by VARCHAR(100),
+                        message TEXT
+                    )
+                """;
+                stmt.executeUpdate(sql);
+                stmt.executeUpdate("CREATE INDEX idx_redemption_audit_status ON redemption_audit(status)");
+                stmt.executeUpdate("CREATE INDEX idx_redemption_audit_branch ON redemption_audit(branch)");
+                stmt.executeUpdate("CREATE INDEX idx_redemption_audit_time ON redemption_audit(redemption_time)");
+                System.out.println("Created redemption_audit table");
+            }
+        }
+
+        // Create/refresh trigger function + trigger (idempotent).
+        try (Statement stmt = conn.createStatement()) {
+            String funcSql = """
+                CREATE OR REPLACE FUNCTION normalize_redemption_audit_before_insert()
+                RETURNS trigger
+                LANGUAGE plpgsql
+                AS $$
+                BEGIN
+                    NEW.redemption_time := COALESCE(NEW.redemption_time, NOW());
+                    NEW.status := UPPER(COALESCE(NEW.status, 'FAILED'));
+                    IF NEW.status NOT IN ('SUCCESS', 'FAILED') THEN
+                        NEW.status := 'FAILED';
+                    END IF;
+                    NEW.branch := COALESCE(NULLIF(NEW.branch, ''), 'Unknown Company');
+                    RETURN NEW;
+                END;
+                $$;
+            """;
+            stmt.executeUpdate(funcSql);
+            stmt.executeUpdate("DROP TRIGGER IF EXISTS trg_redemption_audit_before_insert ON redemption_audit");
+            stmt.executeUpdate("""
+                CREATE TRIGGER trg_redemption_audit_before_insert
+                BEFORE INSERT ON redemption_audit
+                FOR EACH ROW
+                EXECUTE FUNCTION normalize_redemption_audit_before_insert();
+            """);
+        }
+    }
     
     private static void ensureVouchersTable(Connection conn) throws Exception {
         if (!tableExists(conn, "vouchers")) {
@@ -390,6 +447,28 @@ public class DatabaseSchema {
             addColumnIfNotExists(conn, "vouchers", "redeemed_branch", "VARCHAR(255)");
         }
         
+        // QR/mobile redemption stores free-text names (store staff); not necessarily users.username
+        if (columnExists(conn, "vouchers", "redeemed_by")) {
+            try (Statement fkStmt = conn.createStatement();
+                 ResultSet fkRs = fkStmt.executeQuery(
+                    "SELECT tc.constraint_name FROM information_schema.table_constraints tc " +
+                    "JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name " +
+                    "WHERE tc.table_name = 'vouchers' AND kcu.column_name = 'redeemed_by' " +
+                    "AND tc.constraint_type = 'FOREIGN KEY'")) {
+                while (fkRs.next()) {
+                    String constraintName = fkRs.getString("constraint_name");
+                    try (Statement dropStmt = conn.createStatement()) {
+                        dropStmt.executeUpdate("ALTER TABLE vouchers DROP CONSTRAINT IF EXISTS " + constraintName);
+                        System.out.println("Dropped foreign key on vouchers.redeemed_by: " + constraintName);
+                    } catch (SQLException e) {
+                        System.err.println("Could not drop redeemed_by FK " + constraintName + ": " + e.getMessage());
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("Error dropping redeemed_by foreign keys: " + e.getMessage());
+            }
+        }
+        
         // Fix ref_request foreign key constraint and make it nullable
         try (Statement stmt = conn.createStatement()) {
             // Check if ref_request column exists
@@ -521,6 +600,40 @@ public class DatabaseSchema {
     private static void ensureColumnExists(Connection conn, String tableName, String columnName, String columnType) throws Exception {
         if (!columnExists(conn, tableName, columnName)) {
             addColumnIfNotExists(conn, tableName, columnName, columnType);
+        }
+    }
+    
+    private static void ensureRequestsTrigger(Connection conn) throws Exception {
+        if (tableExists(conn, "requests")) {
+            try (Statement stmt = conn.createStatement()) {
+                // Create trigger function if it doesn't exist
+                String functionSql = """
+                    CREATE OR REPLACE FUNCTION log_requests_insert()
+                    RETURNS TRIGGER AS $$
+                    BEGIN
+                        -- Trigger logic: log the insert operation
+                        INSERT INTO audit_trail (action_type, entity_type, entity_id, action_description, timestamp)
+                        VALUES ('INSERT', 'REQUESTS', NEW.id::text, 'New request inserted with status: ' || NEW.status, CURRENT_TIMESTAMP);
+                        RETURN NEW;
+                    END;
+                    $$ LANGUAGE plpgsql;
+                """;
+                stmt.executeUpdate(functionSql);
+                
+                // Drop trigger if it exists, then create it
+                stmt.executeUpdate("DROP TRIGGER IF EXISTS trigger_requests_insert ON requests");
+                
+                String triggerSql = """
+                    CREATE TRIGGER trigger_requests_insert
+                    AFTER INSERT ON requests
+                    FOR EACH ROW
+                    EXECUTE FUNCTION log_requests_insert();
+                """;
+                stmt.executeUpdate(triggerSql);
+                System.out.println("Created trigger_requests_insert on requests table");
+            } catch (SQLException e) {
+                System.out.println("Note: Could not create requests trigger: " + e.getMessage());
+            }
         }
     }
 }

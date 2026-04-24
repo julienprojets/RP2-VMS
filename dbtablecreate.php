@@ -135,7 +135,6 @@ $sqlStatements = [
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (ref_client) REFERENCES clients(ref_client) ON DELETE CASCADE,
         FOREIGN KEY (ref_request) REFERENCES requests(ref_request) ON DELETE SET NULL,
-        FOREIGN KEY (redeemed_by) REFERENCES users(username) ON DELETE SET NULL,
         FOREIGN KEY (redeemed_branch) REFERENCES branch(branch_id) ON DELETE SET NULL
     );",
     

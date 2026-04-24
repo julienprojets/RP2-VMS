@@ -125,24 +125,35 @@
    LOGOUT BUTTON STYLING
    ---------------------------- */
 .logout-button {
-    -fx-font-size: 20px;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-cursor: hand;
     -fx-padding: 6 12;
-    -fx-text-fill: white;
     -fx-background-radius: 6;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 2, 0, 0, 1);
+}
+
+.logout-button .logout-icon {
+    -fx-fill: white;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
 }
 
 .logout-button:hover {
     -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-background-radius: 6;
-    -fx-text-fill: #ffcccc;
     -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.3), 4, 0, 0, 1);
+}
+
+.logout-button:hover .logout-icon {
+    -fx-fill: #ffcccc;
 }
 
 .logout-button:pressed {
     -fx-background-color: rgba(255, 255, 255, 0.15);
     -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.2), 2, 0, 0, 0);
+}
+
+.logout-button:pressed .logout-icon {
+    -fx-fill: #e6b3b3;
 }

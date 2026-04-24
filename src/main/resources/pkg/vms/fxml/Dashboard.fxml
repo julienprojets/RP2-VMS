@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.shape.SVGPath?>
 
 <AnchorPane stylesheets="@../css/dashboard.css"
             xmlns="http://javafx.com/javafx/17"
@@ -30,10 +31,14 @@
                 <Label fx:id="roleLabel" text="Role: Superuser"
                        styleClass="header-userinfo"/>
 
-                <Button fx:id="logoutButton" 
-                        text="⏻"
+                <Button fx:id="logoutButton"
                         styleClass="logout-button"
                         onAction="#handleLogout">
+                    <graphic>
+                        <!-- Vector icon: avoids missing Unicode glyphs (tofu) on some Windows font setups -->
+                        <SVGPath styleClass="logout-icon"
+                                 content="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                    </graphic>
                     <tooltip>
                         <Tooltip text="Logout"/>
                     </tooltip>

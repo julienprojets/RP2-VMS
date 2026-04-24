@@ -71,9 +71,10 @@ public class PDFGenerator {
                 
                 // QR Code - Contains URL for mobile redemption
                 try {
-                    // Get local IP for QR code URL
+                    // Uses hosted redemption URL when configured, otherwise local fallback.
                     String localIP = getLocalIP();
-                    String redemptionURL = "http://" + localIP + ":8080?code=" + voucherCode;
+                    String localBaseUrl = "http://" + localIP + ":" + RedemptionConfig.getLocalServerPort();
+                    String redemptionURL = RedemptionConfig.buildVoucherAccessUrl(voucherCode, localBaseUrl);
                     
                     byte[] qrBytes = QRCodeGenerator.generateQRCodeBytes(redemptionURL, 150);
                     PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, qrBytes, "qr");

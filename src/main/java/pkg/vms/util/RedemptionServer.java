@@ -19,17 +19,25 @@ import java.time.format.DateTimeFormatter;
 public class RedemptionServer {
     
     private static HttpServer server;
-    private static int port = 8080;
+    private static int port = RedemptionConfig.getLocalServerPort();
     private static boolean isRunning = false;
     
     /**
      * Start the redemption server
      */
     public static void startServer() {
+        if (!RedemptionConfig.isLocalServerEnabled()) {
+            System.out.println("Redemption local server is disabled by configuration.");
+            return;
+        }
+
         if (isRunning) {
             System.out.println("Redemption server is already running on port " + port);
             return;
         }
+        
+        // Ensures schema migrations (e.g. drop FK on redeemed_by for free-text mobile redemption) run before redeem
+        DatabaseSchema.ensureSchemaExists();
         
         try {
             // Bind to 0.0.0.0 to make it accessible from other devices on the network
@@ -38,11 +46,13 @@ public class RedemptionServer {
             // Main redemption page
             server.createContext("/", new RedemptionPageHandler());
             
-            // API endpoint for redemption
+            // API endpoint for redemption (legacy + versioned alias)
             server.createContext("/redeem", new RedemptionAPIHandler());
+            server.createContext("/api/redeem", new RedemptionAPIHandler());
             
-            // API endpoint to check voucher status
+            // API endpoint to check voucher status (legacy + versioned alias)
             server.createContext("/check", new CheckVoucherHandler());
+            server.createContext("/api/check", new CheckVoucherHandler());
             
             server.setExecutor(null); // Use default executor
             server.start();
@@ -141,7 +151,7 @@ public class RedemptionServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             if ("GET".equals(exchange.getRequestMethod())) {
-                String html = getRedemptionPageHTML();
+                String html = RedemptionPageLoader.loadPageHtml(RedemptionConfig.getApiBaseUrl());
                 sendResponse(exchange, 200, html, "text/html");
             } else {
                 sendResponse(exchange, 405, "Method not allowed", "text/plain");
@@ -156,6 +166,11 @@ public class RedemptionServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
+                if ("OPTIONS".equals(exchange.getRequestMethod())) {
+                    sendResponse(exchange, 204, "", "text/plain");
+                    return;
+                }
+
                 if ("POST".equals(exchange.getRequestMethod())) {
                     // Read request body
                     String requestBody = readRequestBody(exchange);
@@ -209,6 +224,11 @@ public class RedemptionServer {
     static class CheckVoucherHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
+            if ("OPTIONS".equals(exchange.getRequestMethod())) {
+                sendResponse(exchange, 204, "", "text/plain");
+                return;
+            }
+
             if ("GET".equals(exchange.getRequestMethod())) {
                 String query = exchange.getRequestURI().getQuery();
                 String voucherCode = extractQueryParam(query, "code");
@@ -312,6 +332,36 @@ public class RedemptionServer {
     /**
      * Process voucher redemption - simplified with automatic connection management
      */
+    private static void logRedemptionAudit(
+            String voucherCode,
+            String branch,
+            String redeemedBy,
+            String status,
+            String message
+    ) {
+        String safeBranch = branch != null && !branch.trim().isEmpty() ? branch : "Unknown Company";
+        String safeRedeemedBy = redeemedBy != null && !redeemedBy.trim().isEmpty() ? redeemedBy : "Mobile User";
+        String safeStatus = status != null ? status : "FAILED";
+
+        try (Connection auditConn = DBconnection.getConnection()) {
+            if (auditConn == null || auditConn.isClosed()) {
+                return;
+            }
+
+            String sql = "INSERT INTO redemption_audit(status, branch, voucher_code, redeemed_by, message) VALUES (?,?,?,?,?)";
+            try (PreparedStatement ps = auditConn.prepareStatement(sql)) {
+                ps.setString(1, safeStatus);
+                ps.setString(2, safeBranch);
+                ps.setString(3, voucherCode);
+                ps.setString(4, safeRedeemedBy);
+                ps.setString(5, message);
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            System.err.println("Warning: could not log redemption audit: " + e.getMessage());
+        }
+    }
+
     private static RedemptionResult processRedemption(String voucherCode, String branch, String redeemedBy) {
         // Try up to 3 times with fresh connections
         for (int attempt = 1; attempt <= 3; attempt++) {
@@ -422,6 +472,13 @@ public class RedemptionServer {
                     stmt.setString(1, voucherCode);
                     try (ResultSet rs = stmt.executeQuery()) {
                         if (!rs.next()) {
+                            logRedemptionAudit(
+                                    voucherCode,
+                                    branch,
+                                    redeemedBy,
+                                    "FAILED",
+                                    "Voucher code not found."
+                            );
                             return new RedemptionResult(false, "Voucher code not found.");
                         }
                         
@@ -437,14 +494,35 @@ public class RedemptionServer {
                 
                 // Validate voucher
                 if (voucherInfo.redeemed) {
+                    logRedemptionAudit(
+                            voucherCode,
+                            branch,
+                            redeemedBy,
+                            "FAILED",
+                            "Voucher has already been redeemed."
+                    );
                     return new RedemptionResult(false, "Voucher has already been redeemed.");
                 }
                 
                 if (voucherInfo.expiryDate != null && voucherInfo.expiryDate.before(new java.sql.Date(System.currentTimeMillis()))) {
+                    logRedemptionAudit(
+                            voucherCode,
+                            branch,
+                            redeemedBy,
+                            "FAILED",
+                            "Voucher has expired."
+                    );
                     return new RedemptionResult(false, "Voucher has expired.");
                 }
                 
                 if (!"Active".equals(voucherInfo.status)) {
+                    logRedemptionAudit(
+                            voucherCode,
+                            branch,
+                            redeemedBy,
+                            "FAILED",
+                            "Voucher is not active. Status: " + voucherInfo.status
+                    );
                     return new RedemptionResult(false, "Voucher is not active. Status: " + voucherInfo.status);
                 }
                 
@@ -542,6 +620,15 @@ public class RedemptionServer {
                     // Log redemption
                     AuditLogger.logRedemption(voucherCode, redeemedBy != null ? redeemedBy : "Mobile User", 
                                             branch != null ? branch : "Unknown Company");
+
+                    // Also record redemption attempt (SUCCESS) for DB audit table
+                    logRedemptionAudit(
+                            voucherCode,
+                            branch,
+                            redeemedBy,
+                            "SUCCESS",
+                            "Voucher redeemed successfully!"
+                    );
                     
                     // Commit transaction
                     conn.commit();
@@ -580,6 +667,13 @@ public class RedemptionServer {
                             Thread.sleep(200);
                         } catch (InterruptedException ie) {
                             Thread.currentThread().interrupt();
+                            logRedemptionAudit(
+                                    voucherCode,
+                                    branch,
+                                    redeemedBy,
+                                    "FAILED",
+                                    "Operation interrupted"
+                            );
                             return new RedemptionResult(false, "Operation interrupted");
                         }
                         continue; // Retry with fresh connection
@@ -587,6 +681,13 @@ public class RedemptionServer {
                     
                     // Not a connection error or out of retries
                     if (attempt >= 3) {
+                        logRedemptionAudit(
+                                voucherCode,
+                                branch,
+                                redeemedBy,
+                                "FAILED",
+                                "Error processing redemption: " + errorMsg
+                        );
                         return new RedemptionResult(false, "Error processing redemption: " + errorMsg);
                     }
                     throw e; // Will be caught by outer catch
@@ -606,6 +707,13 @@ public class RedemptionServer {
                 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
+                logRedemptionAudit(
+                        voucherCode,
+                        branch,
+                        redeemedBy,
+                        "FAILED",
+                        "Operation interrupted"
+                );
                 return new RedemptionResult(false, "Operation interrupted");
             } catch (Exception e) {
                 if (attempt >= 3) {
@@ -615,12 +723,26 @@ public class RedemptionServer {
                     if (errorMsg != null && (errorMsg.contains("closed") || errorMsg.contains("Connection"))) {
                         errorMsg = "Database connection error. Please try again.";
                     }
+                    logRedemptionAudit(
+                            voucherCode,
+                            branch,
+                            redeemedBy,
+                            "FAILED",
+                            "Error processing redemption: " + errorMsg
+                    );
                     return new RedemptionResult(false, "Error processing redemption: " + errorMsg);
                 }
                 // Will retry on next iteration
             }
         }
         
+        logRedemptionAudit(
+                voucherCode,
+                branch,
+                redeemedBy,
+                "FAILED",
+                "Failed to process redemption after 3 attempts"
+        );
         return new RedemptionResult(false, "Failed to process redemption after 3 attempts");
     }
     
@@ -834,6 +956,8 @@ public class RedemptionServer {
     private static void sendResponse(HttpExchange exchange, int statusCode, String response, String contentType) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", contentType + "; charset=UTF-8");
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type, Authorization");
         byte[] responseBytes = response.getBytes(StandardCharsets.UTF_8);
         exchange.sendResponseHeaders(statusCode, responseBytes.length);
         try (OutputStream os = exchange.getResponseBody()) {
